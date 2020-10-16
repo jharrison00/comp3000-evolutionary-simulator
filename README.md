@@ -1,2 +1,2 @@
-# comp3000-evolutionproject
+# comp3000-evolution-project
 Final Year project
