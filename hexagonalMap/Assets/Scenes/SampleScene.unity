@@ -246,8 +246,12 @@ MonoBehaviour:
   - {fileID: 5166355279984980242, guid: 2cd5ce61e6fb67547b5ec165fddbd8ff, type: 3}
   - {fileID: 4658839347930863356, guid: ebdc3c228e1b76844b4ec6b7c9c4cf72, type: 3}
   - {fileID: 1630601632414457275, guid: 73bfdfa659b5eb94fb07a1dc3ad49a82, type: 3}
-  gridWidth: 71
-  gridHeight: 71
+  treePrefabs:
+  - {fileID: 471828, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
+  - {fileID: 405256, guid: c44bd9bdc114d4a60932c0087d9d1732, type: 3}
+  - {fileID: 413218, guid: 826b6a0b570e8460990010fa615b5a2a, type: 3}
+  gridWidth: 21
+  gridHeight: 21
   gridDepth: 10
   noiseScale: 21
   noiseCurve:

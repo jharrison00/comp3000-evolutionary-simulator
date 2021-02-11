@@ -6,6 +6,7 @@ using UnityEngine;
 public class HexGrid : MonoBehaviour
 {
     public Transform[] hexagonPrefabs = new Transform[3];
+    public Transform[] treePrefabs = new Transform[3];
     public int gridWidth;
     public int gridHeight;
     public int gridDepth;
@@ -102,19 +103,101 @@ public class HexGrid : MonoBehaviour
 
                 Transform hex;
                 if (heights[x, y] >= minHeight && heights[x, y] < minHeight + ranges)
+                {
                     hex = Instantiate(hexagonPrefabs[0]) as Transform;
-                else if (heights[x, y] >= minHeight + ranges && heights[x, y] <= maxHeight - ranges) 
+                    hex.name = "Water" + x + "," + y;
+                }
+                else if (heights[x, y] >= minHeight + ranges && heights[x, y] <= maxHeight - ranges)
+                {
                     hex = Instantiate(hexagonPrefabs[1]) as Transform;
+                    int rand = UnityEngine.Random.Range(0, (gridWidth * gridHeight));
+                    if (rand >= 0 && rand <= (gridWidth * gridHeight) / 9) 
+                    {
+                        AddTrees(gridPos, heights[x, y]);
+                        hex.name = "Trees" + x + "," + y;
+                    }
+                    else
+                        hex.name = "Grass" + x + "," + y;
+                }
                 else
+                {
                     hex = Instantiate(hexagonPrefabs[2]) as Transform;
+                    hex.name = "Stone" + x + "," + y;
+                }
 
                 hex.position = CalcWorldPos(gridPos);
                 Vector3 scale = new Vector3(0.0f, heights[x, y], 0.0f);
                 hex.localScale += scale;
                 hex.parent = this.transform;
-                hex.name = "Hexagon" + x + "," + y;
             }
         }
     }
 
+    private void AddTrees(Vector2 gridPos, float scale)
+    {
+        float xRange = (hexWidth - 1f) / 2f;
+        float zRange = (hexHeight - 1f) / 2f;
+        int numTrees = UnityEngine.Random.Range(1, 4);
+        Vector3[] trees = new Vector3[numTrees];
+
+        for (int i = 0; i < numTrees; i++)
+        {
+            Vector3 treeLocation = CalcWorldPos(gridPos);
+
+            int typeOfTree = UnityEngine.Random.Range(0, treePrefabs.Length);
+
+            float randX = UnityEngine.Random.Range(-xRange, xRange);
+            float randZ = UnityEngine.Random.Range(-zRange, zRange);
+
+            treeLocation.x += randX;
+            treeLocation.z += randZ;
+            treeLocation.y = ((scale * 0.1f) * 2f) + 0.2f;
+
+            if (i > 0)
+                treeLocation = DoTreesCollide(trees, treeLocation);
+
+            int rotateY = UnityEngine.Random.Range(0, 360);
+
+            Transform tree;
+            tree = Instantiate(treePrefabs[typeOfTree]);
+            tree.position = treeLocation;
+            tree.eulerAngles = new Vector3(0, rotateY, 0);
+            tree.parent = this.transform;
+            trees[i] = tree.position;
+        }   
+    }
+
+    private Vector3 DoTreesCollide(Vector3[] trees,  Vector3 tree)
+    {
+        // if the tree is within a 0.2 radius of another tree
+        for (int i = 0; i < trees.Length; i++)
+        {
+            float xProximity = tree.x - trees[i].x;
+            float zProximity = tree.z - trees[i].z;
+
+            if (xProximity <= 0.2 && xProximity >= 0) 
+            {
+                tree.x += 0.2f;
+            }
+            if (xProximity >= -0.2 && xProximity <= 0) 
+            {
+                if (tree.x < 0)
+                    tree.x += 0.2f;
+                else
+                    tree.x -= 0.2f;
+            }
+            if (zProximity <= 0.2f && zProximity >= 0)  
+            {
+                tree.z += 0.2f;
+            }
+            if (zProximity >= -0.2 && zProximity <= 0)
+            {
+                if (tree.z < 0) 
+                    tree.z += 0.2f;
+                else
+                    tree.z -= 0.2f;
+            }
+        }
+        return tree;
+    }
 }

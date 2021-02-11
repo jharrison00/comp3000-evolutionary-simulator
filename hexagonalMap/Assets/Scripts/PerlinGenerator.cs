@@ -8,8 +8,8 @@ public class PerlinGenerator
 
     public float scale = 20f;
 
-    public float offsetX = 100f;
-    public float offsetY = 100f;
+    public float offsetX = UnityEngine.Random.Range(0f, 99999f);
+    public float offsetY = UnityEngine.Random.Range(0f, 99999f);
 
     void Start()
     {
