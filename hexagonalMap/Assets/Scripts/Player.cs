@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
         player.position = worldLocation;
         player.parent = this.transform;
         player.name = "PlayerModel";
+        this.transform.position = player.position;
     }
 
     void SetLocation(int x, int y)
@@ -50,7 +51,6 @@ public class Player : MonoBehaviour
 
         worldLocation = hexGrid.CalcWorldPos(location);
         worldLocation.y = ((hexGrid.heights[x, y] * 0.1f) * 2f) + 0.2f;
-
     }
 
     bool IsValidSpawn(int x, int y)
