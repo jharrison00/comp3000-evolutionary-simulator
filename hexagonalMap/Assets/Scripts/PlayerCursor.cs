@@ -6,7 +6,11 @@ public class PlayerCursor : MonoBehaviour
 {
     public GameObject selectedObject;
     public GameObject highlightedObject;
+    public Shader outlineShader;
+    public Shader standardShader;
     public LayerMask selectableLayer;
+    private Player player;
+    private Player existingPlayer;
 
     Ray ray;
     RaycastHit hitData;
@@ -22,7 +26,7 @@ public class PlayerCursor : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                selectedObject = hitData.transform.gameObject;
+                selectedObject = hitData.transform.gameObject;              
             }
         }
         else
@@ -34,6 +38,21 @@ public class PlayerCursor : MonoBehaviour
                 selectedObject = null;
             }
         }
+
+        if (selectedObject != null) 
+        {
+            player = selectedObject.GetComponent<Player>();
+            if (player != null)
+            {
+                player.material.shader = outlineShader;
+                existingPlayer = player;
+            }
+            else
+            {
+                existingPlayer.material.shader = standardShader;
+            }
+        }
+
 
     }
 }

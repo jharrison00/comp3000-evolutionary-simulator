@@ -10,7 +10,8 @@ public class Player : MonoBehaviour
     private Vector3 worldLocation;
     public HexGrid hexGrid;
     public Transform playerPrefab;
-    public Transform player;
+    private Transform player;
+    public Material material;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         MovePlayer();
+        ChangeMaterial();
     }
 
     void SpawnPlayer()
@@ -41,7 +43,11 @@ public class Player : MonoBehaviour
         player.position = worldLocation;
         player.parent = this.transform;
         player.name = "PlayerModel";
+
         this.transform.position = player.position;
+        SkinnedMeshRenderer skinRender = this.GetComponentInChildren<SkinnedMeshRenderer>();
+        this.material = skinRender.material;
+        
     }
 
     void SetLocation(int x, int y)
@@ -72,5 +78,11 @@ public class Player : MonoBehaviour
 
         SetLocation(Mathf.FloorToInt(location.x), Mathf.FloorToInt(location.y));
         player.position = worldLocation;
+    }
+
+    private void ChangeMaterial()
+    {
+        SkinnedMeshRenderer skinRender = this.GetComponentInChildren<SkinnedMeshRenderer>();
+        skinRender.material = this.material;
     }
 }
