@@ -17,6 +17,7 @@ public class HexGrid : MonoBehaviour
     private Texture2D perlinTexture;
     public float[,] heights;
     public string[,] hexType;
+    public string[,] hexLocation;
 
     float hexWidth = 1.732f;
     float hexHeight = 2f;
@@ -80,6 +81,7 @@ public class HexGrid : MonoBehaviour
     {
         heights = new float[gridWidth, gridHeight];
         hexType = new string[gridWidth, gridHeight];
+        hexLocation = new string[gridWidth, gridHeight];
         float minHeight = 9999f, maxHeight = 0f;
         for (int y = 0; y < gridHeight; y++)
         {
@@ -145,6 +147,7 @@ public class HexGrid : MonoBehaviour
                     }
                 }
 
+                hexLocation[x, y] = hex.name;
                 hex.position = CalcWorldPos(gridPos);
                 Vector3 scale = new Vector3(0.0f, heights[x, y], 0.0f);
                 hex.localScale += scale;

@@ -362,6 +362,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 4429102427960218, guid: ca9fda2f4d77c4d4f88d4ed8b939f69b,
     type: 3}
   material: {fileID: 0}
+  cursor: {fileID: 400991228}
+  holdingPlayer: 0
 --- !u!4 &1358205187
 Transform:
   m_ObjectHideFlags: 0

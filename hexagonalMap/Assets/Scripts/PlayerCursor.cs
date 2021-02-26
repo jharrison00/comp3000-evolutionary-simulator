@@ -38,8 +38,13 @@ public class PlayerCursor : MonoBehaviour
                 selectedObject = null;
             }
         }
+        OutlinePlayer();
 
-        if (selectedObject != null) 
+    }
+
+    private void OutlinePlayer()
+    {
+        if (selectedObject != null)
         {
             player = selectedObject.GetComponent<Player>();
             if (player != null)
@@ -47,12 +52,28 @@ public class PlayerCursor : MonoBehaviour
                 player.material.shader = outlineShader;
                 existingPlayer = player;
             }
-            else
+            else if (player == null && existingPlayer != null)
             {
                 existingPlayer.material.shader = standardShader;
             }
         }
-
-
     }
+
+    public bool IsPlayerSelected()
+    {
+        if (selectedObject != null)
+        {
+            player = selectedObject.GetComponent<Player>();
+            if (player != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
 }
