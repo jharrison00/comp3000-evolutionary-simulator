@@ -193,7 +193,6 @@ public class HexGrid : MonoBehaviour
             elements[i] = element.position;
         }   
     }
-
     private Vector3 DoElementsCollide(Vector3[] elements,  Vector3 element)
     {
         // if the tree is within a 0.2 radius of another tree
@@ -226,5 +225,32 @@ public class HexGrid : MonoBehaviour
             }
         }
         return element;
+    }
+
+
+    public Vector2Int CubeToOddR(int x, int y, int z)
+    {
+        int col = x + (z - (z & 1)) / 2;
+        int row = z;
+        Vector2Int colrow = new Vector2Int(col, row);
+        return colrow;
+    }
+    public Vector3Int OddRToCube(int col, int row)
+    {
+        int x = col - (row - (row & 1)) / 2;
+        int z = row;
+        int y = -x - z;
+        Vector3Int xyz = new Vector3Int(x, y, z);
+        return xyz;
+    }
+
+    public int CubeDistance(Vector3Int currLoc, Vector3Int moveLoc)
+    {
+        // distance from currLoc to moveLoc
+        int x, y, z;
+        x = moveLoc.x - currLoc.x;
+        y = moveLoc.y - currLoc.y;
+        z = moveLoc.z - currLoc.z;
+        return (Mathf.Abs(x) + Mathf.Abs(y) + Mathf.Abs(z)) / 2;
     }
 }

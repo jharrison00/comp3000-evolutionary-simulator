@@ -6,16 +6,20 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private int speed, strength, health;
-    public Vector2 location;
+
+    public Vector2Int offsetLocation;
+    public Vector3Int cubeLocation;
     private Vector3 worldLocation;
-    private Vector3 prevWorldLoc;
+    public int moveDistance;
+
     public HexGrid hexGrid;
     public Transform playerPrefab;
-    private Transform player;
     public Material material;
     public PlayerCursor cursor;
+
+    private Transform player;
     private bool isPlayerSelected;
-    public bool holdingPlayer;
+    private bool holdingPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +29,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        cubeLocation = hexGrid.OddRToCube(offsetLocation.x, offsetLocation.y);
         if (cursor.IsPlayerSelected())
         {
             MovePlayer();
@@ -59,11 +64,11 @@ public class Player : MonoBehaviour
         this.material = skinRender.material;    
     }
 
-    void SetLocation(int x, int y)
+    private void SetLocation(int x, int y)
     {
-        location.x = x;
-        location.y = y;
-        worldLocation = hexGrid.CalcWorldPos(location);
+        offsetLocation.x = x;
+        offsetLocation.y = y;
+        worldLocation = hexGrid.CalcWorldPos(offsetLocation);
         worldLocation.y = ((hexGrid.heights[x, y] * 0.1f) * 2f) + 0.2f;
     }
 
@@ -88,16 +93,16 @@ public class Player : MonoBehaviour
     public void MovePlayer()
     {
         WhereToMovePlayer();
-        if (location.x < 0)
-            location.x = 0;
-        else if (location.x >= hexGrid.gridWidth)
-            location.x = hexGrid.gridWidth - 1;
-        if (location.y < 0)
-            location.y = 0;
-        else if (location.y >= hexGrid.gridHeight)
-            location.y = hexGrid.gridHeight - 1;
+        if (offsetLocation.x < 0)
+            offsetLocation.x = 0;
+        else if (offsetLocation.x >= hexGrid.gridWidth)
+            offsetLocation.x = hexGrid.gridWidth - 1;
+        if (offsetLocation.y < 0)
+            offsetLocation.y = 0;
+        else if (offsetLocation.y >= hexGrid.gridHeight)
+            offsetLocation.y = hexGrid.gridHeight - 1;
 
-        SetLocation(Mathf.FloorToInt(location.x), Mathf.FloorToInt(location.y));
+        SetLocation(Mathf.FloorToInt(offsetLocation.x), Mathf.FloorToInt(offsetLocation.y));
         this.transform.position = worldLocation;
     }
 
@@ -122,9 +127,19 @@ public class Player : MonoBehaviour
                     string s = hexGrid.hexLocation[x, y];
                     if (s == cursor.highlightedObject.name)
                     {
-                        prevWorldLoc = worldLocation;
-                        SetLocation(x, y);
-                        RotatePlayer(prevWorldLoc, worldLocation);
+                        Vector3 prevWorldLoc = worldLocation;
+                        Vector3Int currLoc = hexGrid.OddRToCube(offsetLocation.x, offsetLocation.y);
+                        Vector3Int moveLoc = hexGrid.OddRToCube(x, y);
+                        moveDistance = hexGrid.CubeDistance(currLoc, moveLoc);
+                        if (moveDistance <= 3)
+                        {
+                            SetLocation(x, y);
+                            RotatePlayer(prevWorldLoc, worldLocation);
+                        }
+                        else
+                        {
+                            Debug.Log("Move distance too high: " + moveDistance);
+                        }
                     }
                 }
             }                  
