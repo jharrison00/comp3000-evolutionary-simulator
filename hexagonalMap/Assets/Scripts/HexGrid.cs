@@ -106,7 +106,6 @@ public class HexGrid : MonoBehaviour
             for (int x = 0; x < gridWidth; x++)
             {
                 Vector2 gridPos = new Vector2(x, y);
-
                 Transform hex;
                 if (heights[x, y] >= minHeight && heights[x, y] < minHeight + ranges)
                 {
@@ -120,7 +119,7 @@ public class HexGrid : MonoBehaviour
                     int rand = UnityEngine.Random.Range(0, (gridWidth * gridHeight));
                     if (rand >= 0 && rand <= (gridWidth * gridHeight) / 9)
                     {
-                        AddElements(gridPos, heights[x, y], treePrefabs);
+                        AddElements(gridPos, heights[x, y], treePrefabs, hex);
                         hex.name = "Trees" + x + "," + y;
                         hexType[x, y] = "Trees";
                     }
@@ -136,7 +135,7 @@ public class HexGrid : MonoBehaviour
                     int rand = UnityEngine.Random.Range(0, (gridWidth * gridHeight));
                     if (rand >= 0 && rand <= (gridWidth * gridHeight) / 6)
                     {
-                        AddElements(gridPos, heights[x, y], rockPrefabs);
+                        AddElements(gridPos, heights[x, y], rockPrefabs, hex);
                         hex.name = "Rocks" + x + "," + y;
                         hexType[x, y] = "Rocks";
                     }
@@ -160,7 +159,7 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    private void AddElements(Vector2 gridPos, float scale, Transform[] prefabType)
+    private void AddElements(Vector2 gridPos, float scale, Transform[] prefabType, Transform hex)
     {
         float xRange = (hexWidth - 1f) / 2f;
         float zRange = (hexHeight - 1f) / 2f;
@@ -169,7 +168,7 @@ public class HexGrid : MonoBehaviour
 
         for (int i = 0; i < numElements; i++)
         {
-            Vector3 elementLocation = CalcWorldPos(gridPos);
+            Vector3 elementLocation = new Vector3();
 
             int typeOfElement = UnityEngine.Random.Range(0, prefabType.Length);
 
@@ -178,7 +177,7 @@ public class HexGrid : MonoBehaviour
 
             elementLocation.x += randX;
             elementLocation.z += randZ;
-            elementLocation.y = ((scale * 0.1f) * 2f) + 0.2f;
+            elementLocation.y = 0.2f;
 
             if (i > 0)
                 elementLocation = DoElementsCollide(elements, elementLocation);
@@ -189,10 +188,14 @@ public class HexGrid : MonoBehaviour
             element = Instantiate(prefabType[typeOfElement]);
             element.position = elementLocation;
             element.eulerAngles = new Vector3(0, rotateY, 0);
-            element.parent = this.transform;
+            element.localScale -= new Vector3(0, element.localScale.y - element.localScale.y / scale, 0f);
+            element.parent = hex;
+            element.localPosition = elementLocation;
+
             elements[i] = element.position;
         }   
     }
+
     private Vector3 DoElementsCollide(Vector3[] elements,  Vector3 element)
     {
         // if the tree is within a 0.2 radius of another tree
@@ -227,7 +230,6 @@ public class HexGrid : MonoBehaviour
         return element;
     }
 
-
     public Vector2Int CubeToOddR(int x, int y, int z)
     {
         int col = x + (z - (z & 1)) / 2;
@@ -243,7 +245,6 @@ public class HexGrid : MonoBehaviour
         Vector3Int xyz = new Vector3Int(x, y, z);
         return xyz;
     }
-
     public int CubeDistance(Vector3Int currLoc, Vector3Int moveLoc)
     {
         // distance from currLoc to moveLoc

@@ -59,6 +59,18 @@ public class PlayerCursor : MonoBehaviour
         }
     }
 
+    public void OutlineMaterial(Material material)
+    {
+        material.shader = outlineShader;
+    }
+
+    public void RemoveOutlineMaterial(Material material)
+    {
+        material.shader = standardShader;
+    }
+
+
+
     public bool IsPlayerSelected()
     {
         if (selectedObject != null)

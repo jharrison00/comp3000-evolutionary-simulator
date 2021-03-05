@@ -18,13 +18,15 @@ public class Player : MonoBehaviour
     public PlayerCursor cursor;
 
     private Transform player;
-    private bool isPlayerSelected;
-    private bool holdingPlayer;
+    public bool holdingPlayer;
+    private bool isGridHighlighted = false;
+    public Vector2Int[] highlightedTiles;
 
     // Start is called before the first frame update
     void Start()
     {
         SpawnPlayer();
+        speed = 3;
     }
 
     void Update()
@@ -33,14 +35,21 @@ public class Player : MonoBehaviour
         if (cursor.IsPlayerSelected())
         {
             MovePlayer();
+            if (!isGridHighlighted)
+                HighlightGrid();
         }
         else
         {
+            if (highlightedTiles != null)
+            {
+                UnhighlightGrid(highlightedTiles);
+                isGridHighlighted = false;
+
+            }
             holdingPlayer = false;
         }
         ChangeMaterial();
     }
-
     void SpawnPlayer()
     {
         int x = UnityEngine.Random.Range(0, hexGrid.gridWidth);
@@ -131,7 +140,7 @@ public class Player : MonoBehaviour
                         Vector3Int currLoc = hexGrid.OddRToCube(offsetLocation.x, offsetLocation.y);
                         Vector3Int moveLoc = hexGrid.OddRToCube(x, y);
                         moveDistance = hexGrid.CubeDistance(currLoc, moveLoc);
-                        if (moveDistance <= 3)
+                        if (moveDistance <= speed)
                         {
                             SetLocation(x, y);
                             RotatePlayer(prevWorldLoc, worldLocation);
@@ -171,4 +180,65 @@ public class Player : MonoBehaviour
         if (x < 0 && z > 0)
             this.transform.Rotate(0, 315, 0);
     }
+
+    private void HighlightGrid()
+    {
+        isGridHighlighted = true;
+        int N = speed;
+        int c = 0;
+        int area = GetHexArea(N);
+        Vector2Int[] results = new Vector2Int[area];
+        // get all tiles that need highlighting
+        for (int x = -N; x <= N; x++)
+        {
+            for (int y = -N; y <= N; y++)
+            {
+                for (int z = -N; z <= N; z++) 
+                {
+                    if (x + y + z == 0)
+                    {
+                        Vector2Int tile = hexGrid.CubeToOddR(cubeLocation.x + x, cubeLocation.y + y, cubeLocation.z + z);
+                        if (tile.x >= 0 && tile.x <= hexGrid.gridWidth - 1 && tile.y >= 0 && tile.y <= hexGrid.gridHeight - 1)   
+                        {
+                            results[c] = tile;
+                            c++;
+                        }
+
+                    }
+                }
+            }
+        }
+        highlightedTiles = results;
+        // send array of tiles to change their material
+        GameObject hex = GameObject.Find("HexGrid");
+        foreach (var tile in results)
+        {
+            int loc = (tile.y * hexGrid.gridWidth) + tile.x;
+            Material tileMat = hex.transform.GetChild(loc).GetChild(0).GetComponent<MeshRenderer>().material;
+            cursor.OutlineMaterial(tileMat);
+        }
+    }
+
+    private void UnhighlightGrid(Vector2Int[] tiles)
+    {
+        GameObject hex = GameObject.Find("HexGrid");
+        foreach (var tile in tiles)
+        {
+            int loc = (tile.y * hexGrid.gridWidth) + tile.x;
+            Material tileMat = hex.transform.GetChild(loc).GetChild(0).GetComponent<MeshRenderer>().material;
+            cursor.RemoveOutlineMaterial(tileMat);
+        }
+    }
+
+
+    private int GetHexArea(int N)
+    {
+        int area = 1;
+        for (int i = N; i >= 1; i--)
+        {
+            area += i * 6;
+        }
+        return area;
+    }
+
 }
