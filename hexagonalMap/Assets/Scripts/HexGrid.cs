@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class HexGrid : MonoBehaviour
 {
+    public static HexGrid Instance;
+
     public Transform[] hexagonPrefabs = new Transform[3];
     public Transform[] treePrefabs = new Transform[3];
     public Transform[] rockPrefabs = new Transform[24];
+    public Transform foodPrefab;
     public int gridWidth;
     public int gridHeight;
     public int gridDepth;
@@ -24,6 +27,12 @@ public class HexGrid : MonoBehaviour
     public float gap = 0.0f;
 
     Vector3 startPos;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         CreatePerlinTexture();
@@ -82,7 +91,7 @@ public class HexGrid : MonoBehaviour
         heights = new float[gridWidth, gridHeight];
         hexType = new string[gridWidth, gridHeight];
         hexLocation = new string[gridWidth, gridHeight];
-        float minHeight = 9999f, maxHeight = 0f;
+        float minHeight = Mathf.Infinity, maxHeight = 0f;
         for (int y = 0; y < gridHeight; y++)
         {
             for (int x = 0; x < gridWidth; x++)
@@ -117,11 +126,17 @@ public class HexGrid : MonoBehaviour
                 {
                     hex = Instantiate(hexagonPrefabs[1]) as Transform;
                     int rand = UnityEngine.Random.Range(0, (gridWidth * gridHeight));
-                    if (rand >= 0 && rand <= (gridWidth * gridHeight) / 9)
+                    if (rand >= 0 && rand < (gridWidth * gridHeight) / 9)
                     {
                         AddElements(gridPos, heights[x, y], treePrefabs, hex);
                         hex.name = "Trees" + x + "," + y;
                         hexType[x, y] = "Trees";
+                    }
+                    else if (rand >= (gridWidth * gridHeight) / 9 && rand <= (gridWidth * gridHeight) / 5) 
+                    {
+                        AddFood(gridPos, heights[x, y], foodPrefab, hex);
+                        hex.name = "Vegetation" + x + "," + y;
+                        hexType[x, y] = "Vegetation";
                     }
                     else
                     {
@@ -157,6 +172,21 @@ public class HexGrid : MonoBehaviour
                 boxCollider.center = new Vector3(0, 0.1f, 0);
             }
         }
+    }
+
+    private void AddFood(Vector2 gridPos, float scale, Transform foodPrefab, Transform hex)
+    {
+        Vector3 elementLocation = new Vector3();
+        elementLocation.x = 0;
+        elementLocation.z = 0;
+        elementLocation.y = 0.2f;
+
+        Transform food;
+        food = Instantiate(foodPrefab);
+        food.position = elementLocation;
+        food.localScale -= new Vector3(0, food.localScale.y - food.localScale.y / scale, 0f);
+        food.parent = hex;
+        food.localPosition = elementLocation;
     }
 
     private void AddElements(Vector2 gridPos, float scale, Transform[] prefabType, Transform hex)

@@ -7,12 +7,12 @@ public class Player : MonoBehaviour
 {
     private int speed, strength, health;
 
-    public Vector2Int offsetLocation;
+    public Vector2Int location;
     public Vector3Int cubeLocation;
     private Vector3 worldLocation;
     public int moveDistance;
 
-    public HexGrid hexGrid;
+    private HexGrid hexGrid;
     public Transform playerPrefab;
     public Material material;
     public PlayerCursor cursor;
@@ -25,18 +25,19 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hexGrid = HexGrid.Instance;
         SpawnPlayer();
         speed = 3;
     }
 
     void Update()
     {
-        cubeLocation = hexGrid.OddRToCube(offsetLocation.x, offsetLocation.y);
+        cubeLocation = hexGrid.OddRToCube(location.x, location.y);
         if (cursor.IsPlayerSelected())
         {
-            MovePlayer();
             if (!isGridHighlighted)
                 HighlightGrid();
+            MovePlayer();
         }
         else
         {
@@ -44,7 +45,6 @@ public class Player : MonoBehaviour
             {
                 UnhighlightGrid(highlightedTiles);
                 isGridHighlighted = false;
-
             }
             holdingPlayer = false;
         }
@@ -56,14 +56,16 @@ public class Player : MonoBehaviour
         int y = UnityEngine.Random.Range(0, hexGrid.gridHeight);
 
         SetLocation(x, y);
-
-        if (!IsValidSpawn(x, y))
+        int i = 0;
+        while (!IsValidSpawn(x, y))
         {
+            if (i > 50)
+                break;
             x = UnityEngine.Random.Range(0, hexGrid.gridWidth);
             y = UnityEngine.Random.Range(0, hexGrid.gridHeight);
             SetLocation(x, y);
+            i++;
         }
-
         player = Instantiate(playerPrefab) as Transform;
         player.parent = this.transform;
         player.name = "PlayerModel";
@@ -75,9 +77,9 @@ public class Player : MonoBehaviour
 
     private void SetLocation(int x, int y)
     {
-        offsetLocation.x = x;
-        offsetLocation.y = y;
-        worldLocation = hexGrid.CalcWorldPos(offsetLocation);
+        location.x = x;
+        location.y = y;
+        worldLocation = hexGrid.CalcWorldPos(location);
         worldLocation.y = ((hexGrid.heights[x, y] * 0.1f) * 2f) + 0.2f;
     }
 
@@ -102,16 +104,17 @@ public class Player : MonoBehaviour
     public void MovePlayer()
     {
         WhereToMovePlayer();
-        if (offsetLocation.x < 0)
-            offsetLocation.x = 0;
-        else if (offsetLocation.x >= hexGrid.gridWidth)
-            offsetLocation.x = hexGrid.gridWidth - 1;
-        if (offsetLocation.y < 0)
-            offsetLocation.y = 0;
-        else if (offsetLocation.y >= hexGrid.gridHeight)
-            offsetLocation.y = hexGrid.gridHeight - 1;
+        if (location.x < 0)
+            location.x = 0;
+        else if (location.x >= hexGrid.gridWidth)
+            location.x = hexGrid.gridWidth - 1;
 
-        SetLocation(Mathf.FloorToInt(offsetLocation.x), Mathf.FloorToInt(offsetLocation.y));
+        if (location.y < 0)
+            location.y = 0;
+        else if (location.y >= hexGrid.gridHeight)
+            location.y = hexGrid.gridHeight - 1;
+
+        SetLocation(Mathf.FloorToInt(location.x), Mathf.FloorToInt(location.y));
         this.transform.position = worldLocation;
     }
 
@@ -137,18 +140,16 @@ public class Player : MonoBehaviour
                     if (s == cursor.highlightedObject.name)
                     {
                         Vector3 prevWorldLoc = worldLocation;
-                        Vector3Int currLoc = hexGrid.OddRToCube(offsetLocation.x, offsetLocation.y);
-                        Vector3Int moveLoc = hexGrid.OddRToCube(x, y);
-                        moveDistance = hexGrid.CubeDistance(currLoc, moveLoc);
-                        if (moveDistance <= speed)
+                        foreach (var tile in highlightedTiles)
                         {
-                            SetLocation(x, y);
-                            RotatePlayer(prevWorldLoc, worldLocation);
+                            if (tile.x == x && tile.y == y) 
+                            {
+                                SetLocation(x, y);
+                                RotatePlayer(prevWorldLoc, worldLocation);
+                            }
                         }
-                        else
-                        {
-                            Debug.Log("Move distance too high: " + moveDistance);
-                        }
+                        x = hexGrid.hexLocation.GetLength(0);
+                        y = hexGrid.hexLocation.GetLength(1);
                     }
                 }
             }                  
@@ -184,10 +185,11 @@ public class Player : MonoBehaviour
     private void HighlightGrid()
     {
         isGridHighlighted = true;
-        int N = speed;
+        string currentLocationType = hexGrid.hexType[location.x, location.y];
+        int N = GetMoveDistance(currentLocationType);
         int c = 0;
         int area = GetHexArea(N);
-        Vector2Int[] results = new Vector2Int[area];
+        Vector2Int[] tiles = new Vector2Int[area];
         // get all tiles that need highlighting
         for (int x = -N; x <= N; x++)
         {
@@ -200,19 +202,30 @@ public class Player : MonoBehaviour
                         Vector2Int tile = hexGrid.CubeToOddR(cubeLocation.x + x, cubeLocation.y + y, cubeLocation.z + z);
                         if (tile.x >= 0 && tile.x <= hexGrid.gridWidth - 1 && tile.y >= 0 && tile.y <= hexGrid.gridHeight - 1)   
                         {
-                            results[c] = tile;
+                            tiles[c] = tile;
                             c++;
                         }
-
                     }
                 }
             }
         }
-        highlightedTiles = results;
+        if (c != area) 
+        {
+            Vector2Int[] shapedTiles = new Vector2Int[c];
+            for (int i = 0; i < c; i++)
+            {
+                shapedTiles[i] = tiles[i];
+            }
+            highlightedTiles = shapedTiles;
+        }
+        else
+        {
+            highlightedTiles = tiles;
+        }
         // send array of tiles to change their material
         GameObject hex = GameObject.Find("HexGrid");
-        foreach (var tile in results)
-        {
+        foreach (var tile in highlightedTiles)
+        {    
             int loc = (tile.y * hexGrid.gridWidth) + tile.x;
             Material tileMat = hex.transform.GetChild(loc).GetChild(0).GetComponent<MeshRenderer>().material;
             cursor.OutlineMaterial(tileMat);
@@ -230,7 +243,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
     private int GetHexArea(int N)
     {
         int area = 1;
@@ -239,6 +251,23 @@ public class Player : MonoBehaviour
             area += i * 6;
         }
         return area;
+    }
+
+    private int GetMoveDistance(string terrainType)
+    {
+        if (terrainType == "Grass" || terrainType == "Trees")
+        {
+            return speed;
+        }
+        else if (terrainType == "Stone" || terrainType == "Rocks")
+        {
+            return speed - 1;
+        }
+        else if (terrainType == "Water")
+        {
+            return speed - 2;
+        }
+        return speed;
     }
 
 }
