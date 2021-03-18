@@ -284,4 +284,35 @@ public class HexGrid : MonoBehaviour
         z = moveLoc.z - currLoc.z;
         return (Mathf.Abs(x) + Mathf.Abs(y) + Mathf.Abs(z)) / 2;
     }
+
+    public void RespawnFood(Vector2Int gridPos)
+    {
+        // Delete food at location and rename tile to grass
+        int loc = (gridPos.y * gridWidth) + gridPos.x;
+        if (transform.GetChild(loc).childCount > 2)
+        {
+            var obj = transform.GetChild(loc).GetChild(2);
+            Destroy(obj.gameObject);
+            hexType[gridPos.x, gridPos.y] = "Grass";
+            transform.GetChild(loc).name = "Grass" + gridPos.x + "," + gridPos.y;
+        }
+        // Create food at different area
+        while (true)
+        {
+            int x = UnityEngine.Random.Range(0, gridWidth);
+            int y = UnityEngine.Random.Range(0, gridHeight);
+            if (hexType[x, y] == "Grass")
+            {
+                Transform hex = transform.GetChild((y * gridWidth) + x);
+                AddFood(new Vector2(x, y), heights[x, y], foodPrefab, hex);
+                var obj = transform.GetChild((y * gridWidth) + x).GetChild(2);
+                obj.localScale += new Vector3(0, obj.localScale.y * heights[x, y], 0f);
+                hex.name = "Vegetation" + x + "," + y;
+                hexType[x, y] = "Vegetation";
+                Debug.Log("Food spawned at" + hex.name);
+                break;
+            }
+        }
+
+    }
 }

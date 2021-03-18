@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private int speed, strength, health;
+    public int speed, strength, health;
 
     public Vector2Int location;
     public Vector3Int cubeLocation;
