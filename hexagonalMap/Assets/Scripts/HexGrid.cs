@@ -309,7 +309,6 @@ public class HexGrid : MonoBehaviour
                 obj.localScale += new Vector3(0, obj.localScale.y * heights[x, y], 0f);
                 hex.name = "Vegetation" + x + "," + y;
                 hexType[x, y] = "Vegetation";
-                Debug.Log("Food spawned at" + hex.name);
                 break;
             }
         }
