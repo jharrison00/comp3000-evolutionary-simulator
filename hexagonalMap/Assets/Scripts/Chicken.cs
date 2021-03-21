@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -107,13 +108,13 @@ public class Chicken : MonoBehaviour
 
     public void ChooseMove()
     {
-
         animator.SetBool("Eat", false);
         // Get surrounding info (nearby food + chickens)
         string currentLocationType = hexGrid.hexType[location.x, location.y];
         movableTiles = GetMoves(GetMoveDistance(currentLocationType));
+        Vector2Int[] movableTilesExcludingOthers = RemoveChickens(movableTiles);
         visionTiles = GetMoves(vision);
-        Vector2Int foodTile = NearestFood(movableTiles);
+        Vector2Int foodTile = NearestFood(movableTilesExcludingOthers);
         Vector2Int foodInVision = NearestFood(visionTiles);
         Vector2Int chickenInVision = chickensController.IsChickenNear(visionTiles, this);
         Vector2Int none = new Vector2Int(-1, -1);
@@ -140,7 +141,7 @@ public class Chicken : MonoBehaviour
         // If there is no food but is hungry = go to food if any in vision
         else if (foodTile == none && hunger >= 40 && foodInVision != none)
         {
-            moveTile = GetClosestTile(foodInVision, movableTiles);
+            moveTile = GetClosestTile(foodInVision, movableTilesExcludingOthers);
         }
         // If there is another chicken and not hungry = send signal to reproduce and stay still
         else if (chickenInVision != none && hunger <= 40 && movesUntilMating == 0)
@@ -153,20 +154,18 @@ public class Chicken : MonoBehaviour
         // Else make a random move (attempt to avoid water + stone)
         else
         {
-            moveTile = TryToAvoidBadTerrain(movableTiles);
+            moveTile = TryToAvoidBadTerrain(movableTilesExcludingOthers);
         }
 
         hunger += 10;   // increase hunger each move
         movesUntilMating--;
         if (movesUntilMating<0)
             movesUntilMating = 0;
+        if (movesUntilChicken != 0 && isChick)
+            movesUntilChicken -= 1;
 
         Move(moveTile);
-        if (movesUntilChicken != 0 && isChick)
-        {
-            // BUGGED
-            movesUntilChicken -= 1;
-        }
+
     }
 
     private bool CheckMatingCalls()
@@ -306,7 +305,7 @@ public class Chicken : MonoBehaviour
 
     private Vector2Int TryToAvoidBadTerrain(Vector2Int[] tiles)
     {
-        Vector2Int tile = tiles[Random.Range(0, tiles.Length)];
+        Vector2Int tile = tiles[UnityEngine.Random.Range(0, tiles.Length)];
         for (int i = 0; i < 5; i++)
         {
             string terrainType = hexGrid.hexType[tile.x, tile.y];
@@ -314,7 +313,7 @@ public class Chicken : MonoBehaviour
             {
                 return tile;
             }
-            tile = tiles[Random.Range(0, tiles.Length)];
+            tile = tiles[UnityEngine.Random.Range(0, tiles.Length)];
         }
         return tile;
     }
@@ -342,4 +341,24 @@ public class Chicken : MonoBehaviour
         cubeLocation = hexGrid.OddRToCube(location.x, location.y);
     }
 
+
+    private Vector2Int[] RemoveChickens(Vector2Int[] tiles)
+    {
+        Vector2Int[] newTiles = new Vector2Int[tiles.Length];
+        int c = 0;
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            Vector2Int tile = tiles[i];
+            Chicken chicken = chickensController.GetChickenAtLocation(tile);
+            if (chicken == null || chicken.location == this.location) 
+            {
+                newTiles[c] = tile;
+                c++;
+            }
+        }
+        Array.Resize(ref newTiles, c);
+
+        return newTiles;
+    }
+    
 }

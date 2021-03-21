@@ -132,7 +132,7 @@ public class HexGrid : MonoBehaviour
                         hex.name = "Trees" + x + "," + y;
                         hexType[x, y] = "Trees";
                     }
-                    else if (rand >= (gridWidth * gridHeight) / 9 && rand <= (gridWidth * gridHeight) / 5) 
+                    else if (rand >= (gridWidth * gridHeight) / 9 && rand <= (gridWidth * gridHeight) / 3) 
                     {
                         AddFood(gridPos, heights[x, y], foodPrefab, hex);
                         hex.name = "Vegetation" + x + "," + y;

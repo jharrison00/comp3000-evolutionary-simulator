@@ -7,6 +7,7 @@ public class ChickensController : MonoBehaviour
 {
     public static ChickensController Instance;
     public int numChickens;
+    public int totalChickens;
     public GameObject chickenPrefab;
     public GameObject chickPrefab;
     public Player player;
@@ -24,6 +25,7 @@ public class ChickensController : MonoBehaviour
     void Start()
     {
         chickens = new Chicken[numChickens];
+        totalChickens = numChickens;
         hexGrid = HexGrid.Instance;
         SpawnChickens();
     }
@@ -100,6 +102,7 @@ public class ChickensController : MonoBehaviour
     public void GrowUp(Chicken chicken)
     {
         Debug.Log(chicken.name + " has grown up");
+        totalChickens++;
         // remove the chick and replace with chicken
         Chicken tempChick = chicken;
         killChick(chicken);
@@ -108,7 +111,7 @@ public class ChickensController : MonoBehaviour
         numChickens += 1;
         GameObject newChickenObj = Instantiate(chickenPrefab);
         Chicken newChicken = newChickenObj.AddComponent<Chicken>();
-        newChickenObj.name = "Chicken" + (numChickens - 1);
+        newChickenObj.name = "Chickens" + totalChickens;
         Chicken[] newChickens = new Chicken[numChickens];
         if (chickens.Length > 0)
         {
@@ -126,7 +129,6 @@ public class ChickensController : MonoBehaviour
         newChicken.SetLocation(tempChick.location.x, tempChick.location.y);
         newChickenObj.transform.LookAt(new Vector3(0, newChickenObj.transform.position.y, 0));
         newChicken.SetBaseStats(3, 3, 3, 6, false);
-
     }
 
     public Chicken GetChickenAtLocation(Vector2Int location)
