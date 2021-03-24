@@ -16,6 +16,10 @@ public class HexGrid : MonoBehaviour
     public int gridDepth;
     public int noiseScale;
     public AnimationCurve noiseCurve;
+    public float gap = 0.0f;
+    [Range(1,100)]
+    public int foodPercentage;
+    public int foodTiles;
 
     private Texture2D perlinTexture;
     public float[,] heights;
@@ -24,7 +28,6 @@ public class HexGrid : MonoBehaviour
 
     float hexWidth = 1.732f;
     float hexHeight = 2f;
-    public float gap = 0.0f;
 
     Vector3 startPos;
 
@@ -39,7 +42,11 @@ public class HexGrid : MonoBehaviour
         AddGap();
         CalcStartPos();
         CreateGrid();
+        SpawnFood();
+        foodTiles = GetFoodTiles();
+        Instance = this;
     }
+
 
     void CreatePerlinTexture()
     {
@@ -122,7 +129,7 @@ public class HexGrid : MonoBehaviour
                     hex.name = "Water" + x + "," + y;
                     hexType[x, y] = "Water";
                 }
-                else if (heights[x, y] >= minHeight + ranges && heights[x, y] <= maxHeight - ranges)
+                else if (heights[x, y] >= minHeight + ranges && heights[x, y] <= maxHeight - ranges + 1)
                 {
                     hex = Instantiate(hexagonPrefabs[1]) as Transform;
                     int rand = UnityEngine.Random.Range(0, (gridWidth * gridHeight));
@@ -131,12 +138,6 @@ public class HexGrid : MonoBehaviour
                         AddElements(gridPos, heights[x, y], treePrefabs, hex);
                         hex.name = "Trees" + x + "," + y;
                         hexType[x, y] = "Trees";
-                    }
-                    else if (rand >= (gridWidth * gridHeight) / 9 && rand <= (gridWidth * gridHeight) / 3) 
-                    {
-                        AddFood(gridPos, heights[x, y], foodPrefab, hex);
-                        hex.name = "Vegetation" + x + "," + y;
-                        hexType[x, y] = "Vegetation";
                     }
                     else
                     {
@@ -174,6 +175,82 @@ public class HexGrid : MonoBehaviour
         }
     }
 
+    private void SpawnFood()
+    {
+        //Get all available grass tiles
+        int numGrassTiles = 0;
+        foreach (var tile in hexType)
+        {
+            if (tile == "Grass")
+            {
+                numGrassTiles++;
+            }
+        }
+        // Store grass tiles in array
+        Vector2Int[] grassTiles = new Vector2Int[numGrassTiles];
+        int counter = 0;
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                if (hexType[x,y] == "Grass")
+                {
+                    grassTiles[counter] = new Vector2Int(x, y);
+                    counter++;
+                }
+            }
+        }
+        // Get amount of tiles to be converted to food ( based on percentage - foodPopulation)
+        float foodTilesF = numGrassTiles * (foodPercentage / 100f);
+        int foodTiles = Mathf.FloorToInt(foodTilesF);
+        // Convert random grass tiles to food
+        for (int i = foodTiles; i > 0; i--)
+        {
+            int rand = UnityEngine.Random.Range(0, grassTiles.Length);
+            Vector2Int tile = grassTiles[rand];
+            Transform hex = transform.GetChild((tile.y * gridWidth) + tile.x);
+            AddFood(tile, heights[tile.x, tile.y], foodPrefab, hex);
+            hex.name = "Vegetation" + tile.x + "," + tile.y;
+            hexType[tile.x, tile.y] = "Vegetation";
+            hexLocation[tile.x, tile.y] = hex.name;
+            var obj = transform.GetChild((tile.y * gridWidth) + tile.x).GetChild(2);
+            obj.localScale += new Vector3(0, obj.localScale.y * heights[tile.x, tile.y], 0f);
+            // replace grassTiles array to not include this tile
+            numGrassTiles--;
+            Vector2Int[] newGrassTiles = new Vector2Int[numGrassTiles];
+            bool removed = false;
+            for (int c = 0; c < numGrassTiles; c++)
+            {
+                if (grassTiles[c] == new Vector2Int(tile.x, tile.y))
+                {
+                    newGrassTiles[c] = grassTiles[c + 1];
+                    c++;
+                    removed = true;
+                }
+                else
+                {
+                    if (removed)
+                        newGrassTiles[c - 1] = grassTiles[c];
+                    else
+                        newGrassTiles[c] = grassTiles[c];
+                }
+            }
+            grassTiles = newGrassTiles;
+        }
+    }
+
+    private int GetFoodTiles()
+    {
+        int foodTiles = 0;
+        foreach (var tile in hexType)
+        {
+            if (tile == "Vegetation")
+            {
+                foodTiles++;
+            }
+        }
+        return foodTiles;
+    }
     private void AddFood(Vector2 gridPos, float scale, Transform foodPrefab, Transform hex)
     {
         Vector3 elementLocation = new Vector3();
@@ -297,21 +374,24 @@ public class HexGrid : MonoBehaviour
             transform.GetChild(loc).name = "Grass" + gridPos.x + "," + gridPos.y;
         }
         // Create food at different area
-        while (true)
+        if (GetFoodTiles() == foodTiles - 1) 
         {
-            int x = UnityEngine.Random.Range(0, gridWidth);
-            int y = UnityEngine.Random.Range(0, gridHeight);
-            if (hexType[x, y] == "Grass")
+            while (true)
             {
-                Transform hex = transform.GetChild((y * gridWidth) + x);
-                AddFood(new Vector2(x, y), heights[x, y], foodPrefab, hex);
-                var obj = transform.GetChild((y * gridWidth) + x).GetChild(2);
-                obj.localScale += new Vector3(0, obj.localScale.y * heights[x, y], 0f);
-                hex.name = "Vegetation" + x + "," + y;
-                hexType[x, y] = "Vegetation";
-                break;
+                int x = UnityEngine.Random.Range(0, gridWidth);
+                int y = UnityEngine.Random.Range(0, gridHeight);
+                if (hexType[x, y] == "Grass")
+                {
+                    Transform hex = transform.GetChild((y * gridWidth) + x);
+                    AddFood(new Vector2(x, y), heights[x, y], foodPrefab, hex);
+                    var obj = transform.GetChild((y * gridWidth) + x).GetChild(2);
+                    obj.localScale += new Vector3(0, obj.localScale.y * heights[x, y], 0f);
+                    hex.name = "Vegetation" + x + "," + y;
+                    hexType[x, y] = "Vegetation";
+                    hexLocation[x, y] = hex.name;
+                    break;
+                }
             }
         }
-
     }
 }

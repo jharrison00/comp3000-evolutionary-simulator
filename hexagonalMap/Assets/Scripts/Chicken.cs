@@ -309,7 +309,7 @@ public class Chicken : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             string terrainType = hexGrid.hexType[tile.x, tile.y];
-            if (terrainType != "Water" && terrainType != "Stone" && terrainType != "Rocks" && tile != location)
+            if (terrainType != "Water" && tile != location)
             {
                 return tile;
             }
