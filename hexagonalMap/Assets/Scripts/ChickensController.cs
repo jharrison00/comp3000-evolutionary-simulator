@@ -15,6 +15,7 @@ public class ChickensController : MonoBehaviour
     public Chicken[] chickens;
     private HexGrid hexGrid;
     public Chicken[] chicks;
+    public GeneticAlgorithm ga; 
     private int numChicks = 0;
 
     private void Awake()
@@ -27,6 +28,7 @@ public class ChickensController : MonoBehaviour
         chickens = new Chicken[numChickens];
         totalChickens = numChickens;
         hexGrid = HexGrid.Instance;
+        ga = GetComponent<GeneticAlgorithm>();
         SpawnChickens();
     }
 
@@ -40,7 +42,7 @@ public class ChickensController : MonoBehaviour
             chickens[i] = chicken;
             chickenObj.transform.position = GetRandomSpawnLocation(chicken);
             chickenObj.transform.LookAt(new Vector3(0, chickenObj.transform.position.y, 0));
-            chicken.SetBaseStats(3, 3, 3, 6, false);
+            chicken.SetBaseStats(3, 3, 6, 10, false);   // starter statistics ( TO BE CHANGED BY USER)
         }
     }
 
@@ -111,7 +113,7 @@ public class ChickensController : MonoBehaviour
         numChickens += 1;
         GameObject newChickenObj = Instantiate(chickenPrefab);
         Chicken newChicken = newChickenObj.AddComponent<Chicken>();
-        newChickenObj.name = "Chickens" + totalChickens;
+        newChickenObj.name = "Chicken" + totalChickens;
         Chicken[] newChickens = new Chicken[numChickens];
         if (chickens.Length > 0)
         {
@@ -128,7 +130,7 @@ public class ChickensController : MonoBehaviour
         newChickenObj.transform.position = tempChick.worldLocation;
         newChicken.SetLocation(tempChick.location.x, tempChick.location.y);
         newChickenObj.transform.LookAt(new Vector3(0, newChickenObj.transform.position.y, 0));
-        newChicken.SetBaseStats(3, 3, 3, 6, false);
+        newChicken.SetBaseStats(tempChick.speed, tempChick.health, tempChick.vision, tempChick.energy, false);   
     }
 
     public Chicken GetChickenAtLocation(Vector2Int location)
@@ -226,7 +228,10 @@ public class ChickensController : MonoBehaviour
             chickObj.transform.position = babyWorldLocation;
             chickObj.transform.LookAt(new Vector3(0, chickObj.transform.position.y, 0));
             chick.SetLocation(babyLocation.x, babyLocation.y);
-            chick.SetBaseStats(1, 1, 1, 3, true);     //EVOLUTION GOES HERE
+            // use genetic algorithm to decide offsprings statistics
+
+            int[] stats = ga.Begin(chick, sender, recipient);
+            chick.SetBaseStats(stats[0], stats[1], stats[2], stats[3], true);
         }
         else
         {

@@ -20,6 +20,7 @@ public class HexGrid : MonoBehaviour
     [Range(1,100)]
     public int foodPercentage;
     public int foodTiles;
+    public int totalFoodTiles;
 
     private Texture2D perlinTexture;
     public float[,] heights;
@@ -34,6 +35,11 @@ public class HexGrid : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Update()
+    {
+        totalFoodTiles = GetFoodTiles();
     }
 
     void Start()

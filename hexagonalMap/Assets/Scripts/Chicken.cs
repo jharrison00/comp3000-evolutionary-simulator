@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Chicken : MonoBehaviour
 {
-    public int speed, strength, health, hunger, vision;
+    public int speed, health, vision, energy, hunger;
     public Vector2Int location;
     public Vector3Int cubeLocation;
     public Vector3 worldLocation;
@@ -69,7 +69,7 @@ public class Chicken : MonoBehaviour
         }
         if (eating)
             Eat();
-        if (hunger >= 100)
+        if (hunger >= energy * 10) 
             chickensController.Kill(this);
         if (!timerActive && !moving)
         {
@@ -82,13 +82,13 @@ public class Chicken : MonoBehaviour
         }
     }
 
-    public void SetBaseStats(int speed, int strength, int health, int vision, bool chick)
+    public void SetBaseStats(int speed, int health, int vision, int energy, bool chick)
     {
         this.speed = speed;
-        this.strength = strength;
         this.health = health;
         this.vision = vision;
         this.hunger = 0;    // 0 is full 100 is starving
+        this.energy = energy;
         animator = this.gameObject.GetComponent<Animator>();
         if (chick)
         {
@@ -133,10 +133,14 @@ public class Chicken : MonoBehaviour
             }
         }
         // If there is food and is hungry = go to food source
-        else if (foodTile != none && hunger >= 40)
+        else if (foodInVision != none && hunger >= 40)
         {
-            moveTile = foodTile;
-            eating = true;
+            moveTile = GetClosestTile(foodInVision, movableTilesExcludingOthers);
+            if (hexGrid.CubeDistance(hexGrid.OddRToCube(foodTile.x, foodTile.y), hexGrid.OddRToCube(moveTile.x, moveTile.y)) == 0) 
+            {
+                eating = true;
+                hunger = 0;
+            }
         }
         // If there is no food but is hungry = go to food if any in vision
         else if (foodTile == none && hunger >= 40 && foodInVision != none)
@@ -157,7 +161,7 @@ public class Chicken : MonoBehaviour
             moveTile = TryToAvoidBadTerrain(movableTilesExcludingOthers);
         }
 
-        hunger += 10;   // increase hunger each move
+        this.hunger += 10;   // increase hunger each move
         movesUntilMating--;
         if (movesUntilMating<0)
             movesUntilMating = 0;
@@ -323,7 +327,7 @@ public class Chicken : MonoBehaviour
         if (moveTileWorldLoc == new Vector3(0, 0, 0))
         {
             animator.SetBool("Eat", true);
-            hunger = 0;
+            this.hunger = 0;
             hexGrid.RespawnFood(location);
             eating = false;
         }
