@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chicken : MonoBehaviour
+public class Chicken : Animal
 {
-    public int speed, health, vision, energy, hunger;
+    public int hunger;
     public Vector2Int location;
     public Vector3Int cubeLocation;
     public Vector3 worldLocation;
@@ -87,8 +87,9 @@ public class Chicken : MonoBehaviour
         this.speed = speed;
         this.health = health;
         this.vision = vision;
-        this.hunger = 0;    // 0 is full 100 is starving
         this.energy = energy;
+        this.type = SpeciesType.Prey;
+        hunger = 0;    // 0 is full 100 is starving
         animator = this.gameObject.GetComponent<Animator>();
         if (chick)
         {

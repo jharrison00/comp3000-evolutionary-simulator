@@ -225,12 +225,10 @@ public class HexGrid : MonoBehaviour
             numGrassTiles--;
             Vector2Int[] newGrassTiles = new Vector2Int[numGrassTiles];
             bool removed = false;
-            for (int c = 0; c < numGrassTiles; c++)
+            for (int c = 0; c <= numGrassTiles; c++)
             {
                 if (grassTiles[c] == new Vector2Int(tile.x, tile.y))
                 {
-                    newGrassTiles[c] = grassTiles[c + 1];
-                    c++;
                     removed = true;
                 }
                 else

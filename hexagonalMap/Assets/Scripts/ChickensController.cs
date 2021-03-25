@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChickensController : MonoBehaviour
+public class ChickensController : AnimalsController
 {
     public static ChickensController Instance;
     public int numChickens;
@@ -15,7 +15,7 @@ public class ChickensController : MonoBehaviour
     public Chicken[] chickens;
     private HexGrid hexGrid;
     public Chicken[] chicks;
-    public GeneticAlgorithm ga; 
+    public GeneticAlgorithm geneticAlgorithm; 
     private int numChicks = 0;
 
     private void Awake()
@@ -28,7 +28,7 @@ public class ChickensController : MonoBehaviour
         chickens = new Chicken[numChickens];
         totalChickens = numChickens;
         hexGrid = HexGrid.Instance;
-        ga = GetComponent<GeneticAlgorithm>();
+        geneticAlgorithm = GetComponent<GeneticAlgorithm>();
         SpawnChickens();
     }
 
@@ -230,7 +230,7 @@ public class ChickensController : MonoBehaviour
             chick.SetLocation(babyLocation.x, babyLocation.y);
             // use genetic algorithm to decide offsprings statistics
 
-            int[] stats = ga.Begin(chick, sender, recipient);
+            int[] stats = geneticAlgorithm.Begin(chick, sender, recipient);
             chick.SetBaseStats(stats[0], stats[1], stats[2], stats[3], true);
         }
         else

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GeneticAlgorithm : MonoBehaviour
 {
-    [Range(0,100)]
+    [Range(0, 100)]
     public int mutationRate;
 
     public int totalMutations = 0;
 
-    public int[] Begin(Chicken offspring, Chicken p1, Chicken p2)
+    public int[] Begin(Animal offspring, Animal p1, Chicken p2)
     {
         int[] p1Chromosome = CreateChromosome(p1);
         int[] p2Chromosome = CreateChromosome(p2);
@@ -19,14 +19,14 @@ public class GeneticAlgorithm : MonoBehaviour
         return offspringChromosome;
     }
 
-    private int[] CreateChromosome(Chicken chicken)
+    private int[] CreateChromosome(Animal animal)
     {
         // create an array of variables that will be mutated (string of genes into a chromosome)
         int[] genes = new int[4];
-        genes[0] = chicken.speed;
-        genes[1] = chicken.health;
-        genes[2] = chicken.vision;
-        genes[3] = chicken.energy;
+        genes[0] = animal.speed;
+        genes[1] = animal.health;
+        genes[2] = animal.vision;
+        genes[3] = animal.energy;
         return genes;
     }
 
@@ -34,7 +34,7 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         // Specify a crossover point randomly and create offspring chromosome
         int[] chromosome = new int[4];
-        int cp = UnityEngine.Random.Range(0, 3);
+        int cp = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < chromosome.Length; i++)
         {
             if (i < cp)
@@ -49,10 +49,10 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         // Mutate genes of chromosome based on mutation chance specified
         int rand = Random.Range(0, 100);
-        if (mutationRate - rand >= 0) 
+        if (mutationRate - rand >= 0)
         {
             totalMutations++;
-            int mutations = Random.Range(1, 4);     // amount of genes to mutate (can mutate the same one multiple times)
+            int mutations = Random.Range(1, 5);     // amount of genes to mutate (can mutate the same one multiple times)
             for (int i = 0; i < mutations; i++)
             {
                 int gene = Random.Range(0, 4);      // gene to mutate
