@@ -5,19 +5,7 @@ using UnityEngine;
 
 public class Chicken : Animal
 {
-    public int hunger;
-    public Vector2Int location;
-    public Vector3Int cubeLocation;
-    public Vector3 worldLocation;
-
-    public Vector2Int[] movableTiles;
-    public Vector2Int[] visionTiles;
-    private Vector3 moveTileWorldLoc;
-
-    public HexGrid hexGrid = HexGrid.Instance;
     public ChickensController chickensController = ChickensController.Instance;
-
-    private Animator animator;
 
     private bool eating = false;
     private bool timerActive = false;
@@ -25,10 +13,6 @@ public class Chicken : Animal
 
     public Chicken mateCallSent;
     public Chicken mateCallRecieved;
-    public int movesUntilMating = 2;
-
-    public int movesUntilChicken = 0;
-    public bool isChick = false;
 
     public void Update()
     {
@@ -73,38 +57,13 @@ public class Chicken : Animal
             chickensController.Kill(this);
         if (!timerActive && !moving)
         {
-            if (movesUntilChicken == 0 && isChick)
+            if (movesUntilAdult == 0 && isBaby)
             {
                 chickensController.GrowUp(this);
             }
             // Do next move when there is no timer and not already moving
             ChooseMove();
         }
-    }
-
-    public void SetBaseStats(int speed, int health, int vision, int energy, bool chick)
-    {
-        this.speed = speed;
-        this.health = health;
-        this.vision = vision;
-        this.energy = energy;
-        this.type = SpeciesType.Prey;
-        hunger = 0;    // 0 is full 100 is starving
-        animator = this.gameObject.GetComponent<Animator>();
-        if (chick)
-        {
-            movesUntilChicken = 5;
-            this.isChick = true;
-        }
-    }
-
-    public void SetLocation(int x, int y)
-    {
-        location.x = x;
-        location.y = y;
-        worldLocation = HexGrid.Instance.CalcWorldPos(location);
-        worldLocation.y = ((HexGrid.Instance.heights[x, y] * 0.1f) * 2f) + 0.2f;
-        cubeLocation = hexGrid.OddRToCube(location.x, location.y);
     }
 
     public void ChooseMove()
@@ -166,8 +125,8 @@ public class Chicken : Animal
         movesUntilMating--;
         if (movesUntilMating<0)
             movesUntilMating = 0;
-        if (movesUntilChicken != 0 && isChick)
-            movesUntilChicken -= 1;
+        if (movesUntilAdult != 0 && isBaby)
+            movesUntilAdult -= 1;
 
         Move(moveTile);
 

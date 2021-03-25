@@ -6,16 +6,11 @@ using UnityEngine;
 public class ChickensController : AnimalsController
 {
     public static ChickensController Instance;
-    public int numChickens;
-    public int totalChickens;
-    public GameObject chickenPrefab;
-    public GameObject chickPrefab;
     public Player player;
 
     public Chicken[] chickens;
-    private HexGrid hexGrid;
     public Chicken[] chicks;
-    public GeneticAlgorithm geneticAlgorithm; 
+
     private int numChicks = 0;
 
     private void Awake()
@@ -25,8 +20,8 @@ public class ChickensController : AnimalsController
 
     void Start()
     {
-        chickens = new Chicken[numChickens];
-        totalChickens = numChickens;
+        chickens = new Chicken[numAnimals];
+        totalAnimals = numAnimals;
         hexGrid = HexGrid.Instance;
         geneticAlgorithm = GetComponent<GeneticAlgorithm>();
         SpawnChickens();
@@ -34,53 +29,16 @@ public class ChickensController : AnimalsController
 
     private void SpawnChickens()
     {
-        for (int i = 0; i < numChickens; i++)
+        for (int i = 0; i < numAnimals; i++)
         {
-            GameObject chickenObj = Instantiate(chickenPrefab);
+            GameObject chickenObj = Instantiate(animalPrefab);
             Chicken chicken = chickenObj.AddComponent<Chicken>();
             chickenObj.name = "Chicken" + i;
             chickens[i] = chicken;
             chickenObj.transform.position = GetRandomSpawnLocation(chicken);
             chickenObj.transform.LookAt(new Vector3(0, chickenObj.transform.position.y, 0));
-            chicken.SetBaseStats(3, 3, 6, 10, false);   // starter statistics ( TO BE CHANGED BY USER)
+            chicken.SetBaseStats(speed, health, vision, energy, Animal.SpeciesType.Prey, false);    // starter statistics ( TO BE CHANGED BY USER)
         }
-    }
-
-    private Vector3 GetRandomSpawnLocation(Chicken chicken)
-    {
-        int x = UnityEngine.Random.Range(0, hexGrid.gridWidth);
-        int y = UnityEngine.Random.Range(0, hexGrid.gridHeight);
-        chicken.SetLocation(x, y);
-        int i = 0;
-        while (!IsValidSpawn(chicken.location, chicken)) 
-        {
-            if (i>50)
-                break;
-            x = UnityEngine.Random.Range(0, hexGrid.gridWidth);
-            y = UnityEngine.Random.Range(0, hexGrid.gridHeight);
-            chicken.SetLocation(x, y);
-            i++;
-        }
-        return chicken.worldLocation;
-    }
-
-    private bool IsValidSpawn(Vector2Int chickenLocation, Chicken chicken)
-    {
-        Vector2Int playerLocation = player.location;
-        if (playerLocation == chickenLocation)
-            return false;
-        foreach (Chicken enemyObj in chickens)
-        {
-            if (chicken != enemyObj && enemyObj != null) 
-            {
-                if (chicken.location == enemyObj.location)
-                    return false;
-            }
-        }
-        string hexType = hexGrid.hexType[chickenLocation.x, chickenLocation.y];
-        if (hexType == "Water") 
-            return false;
-        return true;
     }
 
     public Vector2Int IsChickenNear(Vector2Int[] tiles, Chicken currentChicken)
@@ -104,25 +62,25 @@ public class ChickensController : AnimalsController
     public void GrowUp(Chicken chicken)
     {
         Debug.Log(chicken.name + " has grown up");
-        totalChickens++;
+        totalAnimals++;
         // remove the chick and replace with chicken
         Chicken tempChick = chicken;
         killChick(chicken);
 
         // redo the chickens array and insert new chicken onto end
-        numChickens += 1;
-        GameObject newChickenObj = Instantiate(chickenPrefab);
+        numAnimals += 1;
+        GameObject newChickenObj = Instantiate(animalPrefab);
         Chicken newChicken = newChickenObj.AddComponent<Chicken>();
-        newChickenObj.name = "Chicken" + totalChickens;
-        Chicken[] newChickens = new Chicken[numChickens];
+        newChickenObj.name = "Chicken" + totalAnimals;
+        Chicken[] newChickens = new Chicken[numAnimals];
         if (chickens.Length > 0)
         {
-            for (int i = 0; i < numChickens - 1; i++)
+            for (int i = 0; i < numAnimals - 1; i++)
             {
                 newChickens[i] = chickens[i];
             }
         }
-        newChickens[numChickens - 1] = newChicken;
+        newChickens[numAnimals - 1] = newChicken;
         chickens = newChickens;
 
         // change the chicken object to have the same stats 
@@ -130,7 +88,7 @@ public class ChickensController : AnimalsController
         newChickenObj.transform.position = tempChick.worldLocation;
         newChicken.SetLocation(tempChick.location.x, tempChick.location.y);
         newChickenObj.transform.LookAt(new Vector3(0, newChickenObj.transform.position.y, 0));
-        newChicken.SetBaseStats(tempChick.speed, tempChick.health, tempChick.vision, tempChick.energy, false);   
+        newChicken.SetBaseStats(tempChick.speed, tempChick.health, tempChick.vision, tempChick.energy, Animal.SpeciesType.Prey, false);  
     }
 
     public Chicken GetChickenAtLocation(Vector2Int location)
@@ -155,8 +113,8 @@ public class ChickensController : AnimalsController
     {
         Debug.Log(chicken.name + " has died");
         int i = 0, x = 0;
-        numChickens--;
-        Chicken[] newChickens = new Chicken[numChickens];
+        numAnimals--;
+        Chicken[] newChickens = new Chicken[numAnimals];
         foreach (var item in chickens)
         {
             if (item == chicken)
@@ -209,7 +167,7 @@ public class ChickensController : AnimalsController
             recipient.movesUntilMating = 6;
 
             numChicks += 1;
-            GameObject chickObj = Instantiate(chickPrefab);
+            GameObject chickObj = Instantiate(babyAnimalPrefab);
             Chicken chick = chickObj.AddComponent<Chicken>();
             chickObj.name = "Chick" + (numChicks - 1);
             Chicken[] newChicks = new Chicken[numChicks];
@@ -231,7 +189,7 @@ public class ChickensController : AnimalsController
             // use genetic algorithm to decide offsprings statistics
 
             int[] stats = geneticAlgorithm.Begin(chick, sender, recipient);
-            chick.SetBaseStats(stats[0], stats[1], stats[2], stats[3], true);
+            chick.SetBaseStats(stats[0], stats[1], stats[2], stats[3], Animal.SpeciesType.Prey, true);
         }
         else
         {

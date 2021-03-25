@@ -244,8 +244,9 @@ GameObject:
   m_Component:
   - component: {fileID: 517268024}
   - component: {fileID: 517268023}
+  - component: {fileID: 517268025}
   m_Layer: 0
-  m_Name: Foxes
+  m_Name: Wolves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -263,6 +264,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb27d22ceff75cf4083caa52f9487b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numAnimals: 3
+  totalAnimals: 0
+  animalPrefab: {fileID: 6260966173753891792, guid: e13b7d7d61d4e364bb3a69b258ae54b6,
+    type: 3}
+  babyAnimalPrefab: {fileID: 8530477259693051037, guid: 1d2465e625f23fd4594038dc128f9bc9,
+    type: 3}
+  geneticAlgorithm: {fileID: 0}
+  speed: 3
+  health: 3
+  vision: 6
+  energy: 10
+  hunger: 0
+  hexGrid: {fileID: 0}
+  player: {fileID: 1358205186}
+  wolves: []
+  pups: []
 --- !u!4 &517268024
 Transform:
   m_ObjectHideFlags: 0
@@ -277,6 +294,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &517268025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517268022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbb0ab276dc980488ac00ed9f5c935e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mutationRate: 50
+  totalMutations: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,16 +430,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e927ef0e09a2054c8132f88743c72c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numChickens: 10
-  totalChickens: 0
-  chickenPrefab: {fileID: 1311290861401530, guid: 312b31977ed9b2d48a14849ebb8c7fb3,
+  numAnimals: 10
+  totalAnimals: 0
+  animalPrefab: {fileID: 1311290861401530, guid: 312b31977ed9b2d48a14849ebb8c7fb3,
     type: 3}
-  chickPrefab: {fileID: 4464933448053694945, guid: 02084acc65ef6f24dae01e4647c630dd,
+  babyAnimalPrefab: {fileID: 4464933448053694945, guid: 02084acc65ef6f24dae01e4647c630dd,
     type: 3}
+  geneticAlgorithm: {fileID: 0}
+  speed: 3
+  health: 3
+  vision: 6
+  energy: 10
+  hunger: 0
+  hexGrid: {fileID: 0}
   player: {fileID: 1358205186}
   chickens: []
   chicks: []
-  geneticAlgorithm: {fileID: 0}
 --- !u!4 &1139577953
 Transform:
   m_ObjectHideFlags: 0
@@ -435,7 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdbb0ab276dc980488ac00ed9f5c935e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mutationRate: 0
+  mutationRate: 50
   totalMutations: 0
 --- !u!1 &1358205185
 GameObject:
