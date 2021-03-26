@@ -10,7 +10,7 @@ public class GeneticAlgorithm : MonoBehaviour
 
     public int totalMutations = 0;
 
-    public int[] Begin(Animal offspring, Animal p1, Chicken p2)
+    public int[] Begin(Animal p1, Animal p2)
     {
         int[] p1Chromosome = CreateChromosome(p1);
         int[] p2Chromosome = CreateChromosome(p2);
@@ -24,7 +24,7 @@ public class GeneticAlgorithm : MonoBehaviour
         // create an array of variables that will be mutated (string of genes into a chromosome)
         int[] genes = new int[4];
         genes[0] = animal.speed;
-        genes[1] = animal.health;
+        genes[1] = animal.strength;
         genes[2] = animal.vision;
         genes[3] = animal.energy;
         return genes;

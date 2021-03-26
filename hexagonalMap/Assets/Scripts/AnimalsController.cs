@@ -6,6 +6,9 @@ public class AnimalsController : MonoBehaviour
 {
     public int numAnimals;
     public int totalAnimals;
+    public Animal[] animals;
+    public Animal[] babyAnimals;
+    public int numBabies = 0;
     public GameObject animalPrefab;
     public GameObject babyAnimalPrefab;
     public GeneticAlgorithm geneticAlgorithm;
@@ -32,7 +35,7 @@ public class AnimalsController : MonoBehaviour
 
     public bool IsValidSpawn(Vector2Int animalLocation, Animal animal)
     {
-        foreach (Animal animalObj in ChickensController.Instance.chickens)
+        foreach (Animal animalObj in ChickensController.Instance.animals)
         {
             if (animal != animalObj && animalObj != null)
             {
@@ -40,7 +43,7 @@ public class AnimalsController : MonoBehaviour
                     return false;
             }
         }
-        foreach (Animal animalObj in WolvesController.Instance.wolves)
+        foreach (Animal animalObj in WolvesController.Instance.animals)
         {
             if (animal != animalObj && animalObj != null)
             {
@@ -53,4 +56,181 @@ public class AnimalsController : MonoBehaviour
             return false;
         return true;
     }
+
+    public Chicken GetChickenAtLocation(Vector2Int location)
+    {
+        foreach (var chicken in ChickensController.Instance.animals) 
+        {
+            if (chicken.location == location)
+            {
+                return (Chicken)chicken;
+            }
+        }
+        return null;
+    }
+
+    public Wolf GetWolfAtLocation(Vector2Int location)
+    {
+        foreach (var wolf in WolvesController.Instance.animals)
+        {
+            if (wolf.location == location)
+            {
+                return (Wolf)wolf;
+            }
+        }
+        return null;
+    }
+
+    public void SendMateSignal(Animal sender, Animal recipient)
+    {
+        recipient.mateCallRecieved = sender;
+        sender.mateCallSent = recipient;
+    }
+
+    public void CreateBaby(Animal sender, Animal recipient, Vector2Int babyLocation)
+    {
+        if (recipient.mateCallRecieved != null)
+        {
+            bool chicken = false;
+            Debug.Log(sender.name + " and " + recipient.name + " had a baby");
+            sender.mateCallRecieved = null;
+            sender.mateCallSent = null;
+            sender.hunger += 20;
+            sender.movesUntilMating = 6;
+            recipient.hunger += 20;
+            recipient.movesUntilMating = 6;
+            numBabies += 1;
+            GameObject babyObj = Instantiate(babyAnimalPrefab);
+            Animal baby;
+            if (sender.GetType().Name == "Chicken")
+            {
+                chicken = true;
+                baby = babyObj.AddComponent<Chicken>();
+                babyObj.name = "Chick" + (numBabies - 1);
+            }
+            else
+            {
+                baby = babyObj.AddComponent<Wolf>();
+                babyObj.name = "Pup" + (numBabies - 1);
+            }
+
+            Animal[] newBabies = new Animal[numBabies];
+            if (babyAnimals.Length > 0)
+            {
+                for (int i = 0; i < numBabies - 1; i++)
+                {
+                    newBabies[i] = babyAnimals[i];
+                }
+            }
+            newBabies[numBabies - 1] = baby;
+            babyAnimals = newBabies;
+
+            Vector3 babyWorldLocation = HexGrid.Instance.CalcWorldPos(babyLocation);
+            babyWorldLocation.y = ((HexGrid.Instance.heights[babyLocation.x, babyLocation.y] * 0.1f) * 2f) + 0.2f;
+            babyObj.transform.position = babyWorldLocation;
+            babyObj.transform.LookAt(new Vector3(0, babyObj.transform.position.y, 0));
+            baby.SetLocation(babyLocation.x, babyLocation.y);
+            // use genetic algorithm to decide offsprings statistics
+            int[] stats = geneticAlgorithm.Begin(sender, recipient);
+            if (chicken)
+                baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], Animal.SpeciesType.Prey, true);
+            else
+                baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], Animal.SpeciesType.Predator, true);
+        }
+        else
+        {
+            sender.mateCallRecieved = null;
+            sender.mateCallSent = null;
+        }
+    }
+
+    public void Kill(Animal animal)
+    {
+        Debug.Log(animal.name + " has died");
+        int i = 0, x = 0;
+        numAnimals--;
+        Animal[] newAnimals = new Animal[numAnimals];
+        foreach (var item in animals)
+        {
+            if (item == animal)
+            {
+                animals[i] = null;
+            }
+            else
+            {
+                newAnimals[x] = item;
+                x++;
+            }
+            i++;
+        }
+        animals = newAnimals;
+        Destroy(animal.gameObject);
+    }
+
+    public void KillBaby(Animal animal)
+    {
+        int i = 0, x = 0;
+        numBabies--;
+        Animal[] newBabies = new Animal[numBabies];
+        foreach (var baby in babyAnimals)
+        {
+            if (baby == animal)
+            {
+                babyAnimals[i] = null;
+            }
+            else
+            {
+                newBabies[x] = baby;
+                x++;
+            }
+            i++;
+        }
+        babyAnimals = newBabies;
+        Destroy(animal.gameObject);
+    }
+
+    public void GrowUp(Animal animal)
+    {
+        totalAnimals++;
+        bool chicken = false;
+        // remove the baby and replace with adult
+        Animal tempAnimal = animal;
+        KillBaby(animal);
+
+        // redo the animals array and insert new animal onto end
+        numAnimals += 1;
+        GameObject newAnimalObj = Instantiate(animalPrefab);
+        Animal newAnimal;
+        if (animal.GetType().Name == "Chicken")
+        {
+            chicken = true;
+            newAnimal = newAnimalObj.AddComponent<Chicken>();
+            newAnimalObj.name = "Chicken" + totalAnimals;
+        }
+        else
+        {
+            newAnimal = newAnimalObj.AddComponent<Wolf>();
+            newAnimalObj.name = "Wolf" + totalAnimals;
+        }
+        Animal[] newAnimals = new Animal[numAnimals];
+        if (animals.Length > 0)
+        {
+            for (int i = 0; i < numAnimals - 1; i++)
+            {
+                newAnimals[i] = animals[i];
+            }
+        }
+        newAnimals[numAnimals - 1] = newAnimal;
+        animals = newAnimals;
+        // change the animal object to have the same stats 
+        newAnimalObj.transform.position = tempAnimal.worldLocation;
+        newAnimal.SetLocation(tempAnimal.location.x, tempAnimal.location.y);
+        newAnimalObj.transform.LookAt(new Vector3(0, newAnimalObj.transform.position.y, 0));
+        if (chicken)
+            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, Animal.SpeciesType.Prey, false);
+        else
+            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, Animal.SpeciesType.Predator, false);
+    }
+
+
 }

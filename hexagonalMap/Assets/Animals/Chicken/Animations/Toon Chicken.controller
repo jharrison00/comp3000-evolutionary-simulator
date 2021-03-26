@@ -14,25 +14,25 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Run
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Eat
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Turn Head
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -456,7 +456,7 @@ AnimatorStateMachine:
     m_Position: {x: 876, y: 60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102649627973369498}
-    m_Position: {x: 420, y: 72, z: 0}
+    m_Position: {x: 420, y: 70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102260411584679372}
     m_Position: {x: 672, y: -204, z: 0}
@@ -465,7 +465,7 @@ AnimatorStateMachine:
     m_Position: {x: 672, y: -264, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102724295969363032}
-    m_Position: {x: 876, y: 132, z: 0}
+    m_Position: {x: 880, y: 130, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
