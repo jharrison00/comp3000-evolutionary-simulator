@@ -79,15 +79,15 @@ public class Wolf : Animal
         // If going to mate = move to mating chicken
         if (reproducing)
         {
-            moveTile = GetClosestTile(mateCallSent.location, movableTiles);
-            int distance = hexGrid.CubeDistance(hexGrid.OddRToCube(moveTile.x, moveTile.y), hexGrid.OddRToCube(mateCallSent.location.x, mateCallSent.location.y));
+            moveTile = GetClosestTile(mateCall.location, movableTiles);
+            int distance = hexGrid.CubeDistance(hexGrid.OddRToCube(moveTile.x, moveTile.y), hexGrid.OddRToCube(mateCall.location.x, mateCall.location.y));
             if (distance == 0)
             {
-                wolvesController.CreateBaby(this, (Wolf)mateCallSent, moveTile);
+                wolvesController.CreateBaby(this, (Wolf)mateCall, moveTile);
             }
         }
         // If there is food and is hungry = go to food source
-        else if (foodInVision != none && hunger >= 40)
+        else if (foodInVision != none && hunger >= 50)
         {
             // get as close as possible to food that object can see
             moveTile = GetClosestTile(foodInVision, movableTilesExcludingOthers);  
@@ -95,17 +95,16 @@ public class Wolf : Animal
             {
                 // if object has moved onto the tile successfully
                 Chicken chicken = wolvesController.GetChickenAtLocation(foodInVision);     // gets chicken object 
-                eating = true;
                 Eat(chicken);
             }
         }        
         // If there is no food but is hungry = go as close to food if any in vision
-        else if (foodTile == none && hunger >= 40 && foodInVision != none)
+        else if (foodTile == none && hunger >= 50 && foodInVision != none)
         {
             moveTile = GetClosestTile(foodInVision, movableTilesExcludingOthers);
         }        
         // If there is another wolf and not hungry = send signal to reproduce and stay still
-        else if (wolfInVision != none && hunger <= 40 && movesUntilMating == 0)
+        else if (wolfInVision != none && hunger <= 50 && movesUntilMating == 0)
         {
             wolfInVision = wolvesController.IsWolfNear(visionTiles, this);  // secondary check to make sure there is still a wolf near
             Wolf wolf = wolvesController.GetWolfAtLocation(wolfInVision);
@@ -182,10 +181,13 @@ public class Wolf : Animal
 
     public void Eat(Chicken chickenToEat)
     {
-        animator.SetBool("Eat", true);
-        wolvesController.EatChicken(chickenToEat, this);
-        chickenToEat = null;
-        hunger = 0;
-        eating = false;
+        // if the chicken is stronger than the attack -> the attack will not work
+        if (chickenToEat.strength <= this.strength) 
+        {
+            animator.SetBool("Eat", true);
+            wolvesController.EatChicken(chickenToEat, this);
+            chickenToEat = null;
+            hunger = 0;
+        }
     }
 }

@@ -15,8 +15,7 @@ public class Animal : MonoBehaviour
     public bool isBaby = false;
     public int movesUntilMating = 2;
     public int movesUntilAdult = 0;
-    public Animal mateCallSent;
-    public Animal mateCallRecieved;
+    public Animal mateCall;
     public bool eating = false;
 
     public Vector2Int location;
@@ -147,6 +146,25 @@ public class Animal : MonoBehaviour
         return minTile;
     }
 
+    public Vector2Int GetFurthestTile(Vector2Int desiredMoveTile, Vector2Int[] tiles)
+    {
+        // returns closest possible tile to desired move tile
+        Vector3Int cubeDest = hexGrid.OddRToCube(desiredMoveTile.x, desiredMoveTile.y);
+        int maxDist = 0;
+        Vector2Int maxTile = new Vector2Int(-1, -1);
+        foreach (var tile in tiles)
+        {
+            Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
+            int dist = hexGrid.CubeDistance(cubeTile, cubeDest);
+            if (dist > maxDist)
+            {
+                maxDist = dist;
+                maxTile = tile;
+            }
+        }
+        return maxTile;
+    }
+
     public void Move(Vector2Int moveTile)
     {
         Vector3 tileWorldLoc;
@@ -157,6 +175,7 @@ public class Animal : MonoBehaviour
         location.x = moveTile.x;
         location.y = moveTile.y;
         cubeLocation = hexGrid.OddRToCube(location.x, location.y);
+        hunger = hunger + 10;
     }
 
     public Vector2Int TryToAvoidBadTerrain(Vector2Int[] tiles)
@@ -176,12 +195,9 @@ public class Animal : MonoBehaviour
 
     public bool CheckMatingCalls()
     {
-        if (mateCallSent != null && mateCallRecieved != null)
+        if (mateCall != null)
         {
-            if (mateCallSent == mateCallRecieved)
-            {
                 return true;
-            }
         }
         return false;
     }

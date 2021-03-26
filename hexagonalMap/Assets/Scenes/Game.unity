@@ -214,7 +214,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &400991231
 MonoBehaviour:
@@ -264,21 +264,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb27d22ceff75cf4083caa52f9487b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numAnimals: 2
+  numAnimals: 0
   totalAnimals: 0
+  numBabies: 0
+  totalBabiesMade: 0
   animals: []
   babyAnimals: []
-  numBabies: 0
   animalPrefab: {fileID: 6260966173753891792, guid: e13b7d7d61d4e364bb3a69b258ae54b6,
     type: 3}
   babyAnimalPrefab: {fileID: 8530477259693051037, guid: 1d2465e625f23fd4594038dc128f9bc9,
     type: 3}
   geneticAlgorithm: {fileID: 0}
-  speed: 3
-  health: 3
-  vision: 6
+  speed: 4
+  strength: 3
+  vision: 7
   energy: 10
-  hunger: 0
   hexGrid: {fileID: 0}
   player: {fileID: 0}
 --- !u!4 &517268024
@@ -431,21 +431,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e927ef0e09a2054c8132f88743c72c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numAnimals: 10
+  numAnimals: 20
   totalAnimals: 0
+  numBabies: 0
+  totalBabiesMade: 0
   animals: []
   babyAnimals: []
-  numBabies: 0
   animalPrefab: {fileID: 1311290861401530, guid: 312b31977ed9b2d48a14849ebb8c7fb3,
     type: 3}
   babyAnimalPrefab: {fileID: 4464933448053694945, guid: 02084acc65ef6f24dae01e4647c630dd,
     type: 3}
   geneticAlgorithm: {fileID: 0}
   speed: 3
-  health: 3
+  strength: 3
   vision: 6
-  energy: 10
-  hunger: 0
+  energy: 15
   hexGrid: {fileID: 0}
 --- !u!4 &1139577953
 Transform:
@@ -540,7 +540,7 @@ MonoBehaviour:
   foodPrefab: {fileID: 4022700262380242, guid: 58d18c950edc184449d1b850f5563780, type: 3}
   gridWidth: 21
   gridHeight: 21
-  gridDepth: 10
+  gridDepth: 21
   noiseScale: 21
   noiseCurve:
     serializedVersion: 2
@@ -576,7 +576,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   gap: 0.05
-  foodPercentage: 25
+  foodPercentage: 50
   foodTiles: 0
   totalFoodTiles: 0
 --- !u!4 &1554926552
@@ -591,5 +591,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
