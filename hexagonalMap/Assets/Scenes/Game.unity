@@ -511,7 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e927ef0e09a2054c8132f88743c72c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numAnimals: 50
+  numAnimals: 8000
   totalAnimals: 0
   numBabies: 0
   totalBabiesMade: 0
@@ -657,7 +657,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   gap: 0.05
-  foodPercentage: 60
+  foodPercentage: 50
   foodTiles: 0
   totalFoodTiles: 0
 --- !u!4 &1554926552

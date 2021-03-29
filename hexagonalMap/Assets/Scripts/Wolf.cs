@@ -146,6 +146,11 @@ public class Wolf : Animal
                         // only add if chicken is eatable
                         // Convert tile to cube location and calc distance from current tile
                         Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
+                        if (c >=distances.Length)
+                        {
+                            break;
+                        }
+
                         distances[c] = hexGrid.CubeDistance(cubeLocation, cubeTile);
                         chickenTiles[c] = tile;
                         chickens[c] = (Chicken)chicken;

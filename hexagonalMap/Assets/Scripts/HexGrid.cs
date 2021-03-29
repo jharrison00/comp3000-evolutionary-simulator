@@ -173,10 +173,6 @@ public class HexGrid : MonoBehaviour
                 Vector3 scale = new Vector3(0.0f, heights[x, y], 0.0f);
                 hex.localScale += scale;
                 hex.parent = this.transform;
-                hex.gameObject.AddComponent<BoxCollider>();
-                BoxCollider boxCollider = hex.gameObject.GetComponent<BoxCollider>();
-                boxCollider.size = new Vector3(hexWidth, 0.2f, hexHeight);
-                boxCollider.center = new Vector3(0, 0.1f, 0);
             }
         }
     }

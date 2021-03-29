@@ -62,9 +62,17 @@ public class AnimalsController : MonoBehaviour
     {
         foreach (var chicken in ChickensController.Instance.animals) 
         {
-            if (chicken.location == location)
+            try
             {
-                return (Chicken)chicken;
+                if (chicken.location == location)
+                {
+                    return (Chicken)chicken;
+                }
+            }
+            catch (System.NullReferenceException)
+            {
+                Debug.Log("BROKEN");
+                throw;
             }
         }
         return null;

@@ -90,7 +90,7 @@ public class Chicken : Animal
             if (distance == 0 && movesUntilMating == 0 && mateCall.movesUntilMating == 0) 
             {
                 // Get random number for amount of babies
-                int numBabies = UnityEngine.Random.Range(1, 4);
+                int numBabies = UnityEngine.Random.Range(1, 5);
                 Debug.Log(this.name + " and " + mateCall.name + " had " + numBabies + " babies");
                 for (int i = 0; i < numBabies; i++)
                 {
@@ -139,7 +139,10 @@ public class Chicken : Animal
             movesUntilMating = 0;
         if (movesUntilAdult != 0 && isBaby)
             movesUntilAdult -= 1;
-
+        if (moveTile == none)
+        {
+            moveTile = this.location;
+        }
         Move(moveTile);
     }
 
