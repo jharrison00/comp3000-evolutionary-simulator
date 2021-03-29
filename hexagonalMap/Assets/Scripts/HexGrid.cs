@@ -261,9 +261,11 @@ public class HexGrid : MonoBehaviour
         elementLocation.x = 0;
         elementLocation.z = 0;
         elementLocation.y = 0.2f;
+        int rotateY = UnityEngine.Random.Range(0, 360);
 
         Transform food;
-        food = Instantiate(foodPrefab);
+        food = Instantiate(foodPrefab); 
+        food.eulerAngles = new Vector3(0, rotateY, 0);
         food.position = elementLocation;
         food.localScale -= new Vector3(0, food.localScale.y - food.localScale.y / scale, 0f);
         food.parent = hex;
@@ -389,6 +391,8 @@ public class HexGrid : MonoBehaviour
                     Transform hex = transform.GetChild((y * gridWidth) + x);
                     AddFood(new Vector2(x, y), heights[x, y], foodPrefab, hex);
                     var obj = transform.GetChild((y * gridWidth) + x).GetChild(2);
+                    int rotateY = UnityEngine.Random.Range(0, 360);
+                    obj.eulerAngles = new Vector3(0, rotateY, 0);
                     obj.localScale += new Vector3(0, obj.localScale.y * heights[x, y], 0f);
                     hex.name = "Vegetation" + x + "," + y;
                     hexType[x, y] = "Vegetation";

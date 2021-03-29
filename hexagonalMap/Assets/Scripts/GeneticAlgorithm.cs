@@ -9,6 +9,7 @@ public class GeneticAlgorithm : MonoBehaviour
     public int mutationRate;
 
     public int totalMutations = 0;
+    private int numGenes = 5;
 
     public int[] Begin(Animal p1, Animal p2)
     {
@@ -22,20 +23,21 @@ public class GeneticAlgorithm : MonoBehaviour
     private int[] CreateChromosome(Animal animal)
     {
         // create an array of variables that will be mutated (string of genes into a chromosome)
-        int[] genes = new int[4];
+        int[] genes = new int[numGenes];
         genes[0] = animal.speed;
         genes[1] = animal.strength;
         genes[2] = animal.vision;
         genes[3] = animal.energy;
+        genes[4] = animal.puerperal;
         return genes;
     }
 
     private int[] Crossover(int[] p1, int[] p2)
     {
         // Specify a crossover point randomly and create offspring chromosome
-        int[] chromosome = new int[4];
-        int cp = UnityEngine.Random.Range(0, 4);
-        for (int i = 0; i < chromosome.Length; i++)
+        int[] chromosome = new int[numGenes];
+        int cp = Random.Range(0, numGenes);
+        for (int i = 0; i < numGenes; i++)
         {
             if (i < cp)
                 chromosome[i] = p1[i];  // take gene from p1
@@ -48,14 +50,14 @@ public class GeneticAlgorithm : MonoBehaviour
     private int[] Mutation(int[] chromosome)
     {
         // Mutate genes of chromosome based on mutation chance specified
-        int rand = Random.Range(0, 100);
+        int rand = Random.Range(0, 101);
         if (mutationRate - rand >= 0)
         {
             totalMutations++;
             int mutations = Random.Range(1, 5);     // amount of genes to mutate (can mutate the same one multiple times)
             for (int i = 0; i < mutations; i++)
             {
-                int gene = Random.Range(0, 4);      // gene to mutate
+                int gene = Random.Range(0, numGenes);      // gene to mutate
                 bool positiveMutation;
                 if (Random.value >= 0.5f)
                     positiveMutation = true;
@@ -64,7 +66,7 @@ public class GeneticAlgorithm : MonoBehaviour
 
                 if (positiveMutation)
                     chromosome[gene] = chromosome[gene] + 1;
-                else
+                else if (!positiveMutation && chromosome[gene] > 1) 
                     chromosome[gene] = chromosome[gene] - 1;
             }
         }

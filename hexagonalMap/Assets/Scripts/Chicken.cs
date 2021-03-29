@@ -87,9 +87,19 @@ public class Chicken : Animal
         {
             moveTile = GetClosestTile(mateCall.location, movableTiles);
             int distance = hexGrid.CubeDistance(hexGrid.OddRToCube(moveTile.x, moveTile.y), hexGrid.OddRToCube(mateCall.location.x, mateCall.location.y));
-            if (distance == 0)
+            if (distance == 0 && movesUntilMating == 0 && mateCall.movesUntilMating == 0) 
             {
-                chickensController.CreateBaby(this, (Chicken)mateCall, moveTile);
+                // Get random number for amount of babies
+                int numBabies = UnityEngine.Random.Range(1, 4);
+                Debug.Log(this.name + " and " + mateCall.name + " had " + numBabies + " babies");
+                for (int i = 0; i < numBabies; i++)
+                {
+                    chickensController.CreateBaby(this, (Chicken)mateCall, moveTile);
+                }
+                hunger += 30;
+                mateCall.hunger += 30;
+                mateCall.mateCall = null;
+                mateCall = null;
             }
         }
         //If there is a wolf in vision and not near death = run as far away as possible (only from closest wolf)
@@ -125,7 +135,7 @@ public class Chicken : Animal
             chickensController.SendMateSignal(this, chicken);
         }
         movesUntilMating--;
-        if (movesUntilMating<0)
+        if (movesUntilMating < 0)
             movesUntilMating = 0;
         if (movesUntilAdult != 0 && isBaby)
             movesUntilAdult -= 1;

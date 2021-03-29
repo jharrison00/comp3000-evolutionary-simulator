@@ -13,7 +13,7 @@ public class AnimalsController : MonoBehaviour
     public GameObject animalPrefab;
     public GameObject babyAnimalPrefab;
     public GeneticAlgorithm geneticAlgorithm;
-    public int speed, strength, vision, energy;
+    public int speed, strength, vision, energy, puerperal;
     public HexGrid hexGrid;
 
     public Vector3 GetRandomSpawnLocation(Animal animal)
@@ -89,64 +89,50 @@ public class AnimalsController : MonoBehaviour
 
     public void CreateBaby(Animal sender, Animal recipient, Vector2Int babyLocation)
     {
-        if (recipient.mateCall != null)
+        totalBabiesMade++;
+        bool chicken = false;
+
+        numBabies += 1;
+        GameObject babyObj = Instantiate(babyAnimalPrefab);
+        Animal baby;
+        if (sender.GetType().Name == "Chicken")
         {
-            totalBabiesMade++;
-            bool chicken = false;
-            Debug.Log(sender.name + " and " + recipient.name + " had a baby");
-            sender.mateCall = null;
-            sender.hunger += 20;
-
-            recipient.mateCall = null;
-            recipient.hunger += 20;
-
-            numBabies += 1;
-            GameObject babyObj = Instantiate(babyAnimalPrefab);
-            Animal baby;
-            if (sender.GetType().Name == "Chicken")
-            {
-                chicken = true;
-                baby = babyObj.AddComponent<Chicken>();
-                babyObj.name = "Chick" + (numBabies - 1);
-                sender.movesUntilMating = 2;
-                recipient.movesUntilMating = 2;
-            }
-            else
-            {
-                baby = babyObj.AddComponent<Wolf>();
-                babyObj.name = "Pup" + (numBabies - 1);
-                sender.movesUntilMating = 6;
-                recipient.movesUntilMating = 6;
-            }
-
-            Animal[] newBabies = new Animal[numBabies];
-            if (babyAnimals.Length > 0)
-            {
-                for (int i = 0; i < numBabies - 1; i++)
-                {
-                    newBabies[i] = babyAnimals[i];
-                }
-            }
-            newBabies[numBabies - 1] = baby;
-            babyAnimals = newBabies;
-
-            Vector3 babyWorldLocation = HexGrid.Instance.CalcWorldPos(babyLocation);
-            babyWorldLocation.y = ((HexGrid.Instance.heights[babyLocation.x, babyLocation.y] * 0.1f) * 2f) + 0.2f;
-            babyObj.transform.position = babyWorldLocation;
-            babyObj.transform.LookAt(new Vector3(0, babyObj.transform.position.y, 0));
-            baby.SetLocation(babyLocation.x, babyLocation.y);
-            // use genetic algorithm to decide offsprings statistics
-            int[] stats = geneticAlgorithm.Begin(sender, recipient);
-            baby.transform.parent = this.transform;
-            if (chicken)
-                baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], Animal.SpeciesType.Prey, true);
-            else
-                baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], Animal.SpeciesType.Predator, true);
+            chicken = true;
+            baby = babyObj.AddComponent<Chicken>();
+            babyObj.name = "Chick" + (numBabies - 1);
         }
         else
         {
-            sender.mateCall = null;
+            baby = babyObj.AddComponent<Wolf>();
+            babyObj.name = "Pup" + (numBabies - 1);
         }
+
+        sender.movesUntilMating = puerperal;
+        recipient.movesUntilMating = puerperal;
+
+        Animal[] newBabies = new Animal[numBabies];
+        if (babyAnimals.Length > 0)
+        {
+            for (int i = 0; i < numBabies - 1; i++)
+            {
+                newBabies[i] = babyAnimals[i];
+            }
+        }
+        newBabies[numBabies - 1] = baby;
+        babyAnimals = newBabies;
+
+        Vector3 babyWorldLocation = HexGrid.Instance.CalcWorldPos(babyLocation);
+        babyWorldLocation.y = ((HexGrid.Instance.heights[babyLocation.x, babyLocation.y] * 0.1f) * 2f) + 0.2f;
+        babyObj.transform.position = babyWorldLocation;
+        babyObj.transform.LookAt(new Vector3(0, babyObj.transform.position.y, 0));
+        baby.SetLocation(babyLocation.x, babyLocation.y);
+        // use genetic algorithm to decide offsprings statistics
+        int[] stats = geneticAlgorithm.Begin(sender, recipient);
+        baby.transform.parent = this.transform;
+        if (chicken)
+            baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], stats[4], Animal.SpeciesType.Prey, true);
+        else
+            baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], stats[4], Animal.SpeciesType.Predator, true);
     }
 
     public void Kill(Animal animal)
@@ -232,8 +218,8 @@ public class AnimalsController : MonoBehaviour
         newAnimalObj.transform.LookAt(new Vector3(0, newAnimalObj.transform.position.y, 0));
         newAnimal.transform.parent = this.transform;
         if (chicken)
-            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, Animal.SpeciesType.Prey, false);
+            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, Animal.SpeciesType.Prey, false);
         else
-            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, Animal.SpeciesType.Predator, false);
+            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, Animal.SpeciesType.Predator, false);
     }
 }

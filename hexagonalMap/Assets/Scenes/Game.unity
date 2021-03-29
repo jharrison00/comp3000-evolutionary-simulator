@@ -133,6 +133,8 @@ GameObject:
   - component: {fileID: 400991229}
   - component: {fileID: 400991231}
   - component: {fileID: 400991228}
+  - component: {fileID: 400991232}
+  - component: {fileID: 400991233}
   m_Layer: 0
   m_Name: PlayerCam
   m_TagString: MainCamera
@@ -191,12 +193,12 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -234,6 +236,83 @@ MonoBehaviour:
   dragSpeed: 10
   moveSpeedH: 10
   moveSpeedV: 10
+--- !u!114 &400991232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400991227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: 75842b86cdb09384d8baf4101c7758fc, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
+--- !u!114 &400991233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400991227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeTrigger: {fileID: 400991230}
+  volumeLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 3
+  temporalAntialiasing:
+    jitterSpread: 0.75
+    sharpness: 0.25
+    stationaryBlending: 0.5
+    motionBlending: 0.5
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 0
+    keepAlpha: 0
+  fog:
+    enabled: 0
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
 --- !u!1 &517268022
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb27d22ceff75cf4083caa52f9487b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numAnimals: 0
+  numAnimals: 2
   totalAnimals: 0
   numBabies: 0
   totalBabiesMade: 0
@@ -276,9 +355,10 @@ MonoBehaviour:
     type: 3}
   geneticAlgorithm: {fileID: 0}
   speed: 4
-  strength: 3
-  vision: 7
-  energy: 10
+  strength: 4
+  vision: 10
+  energy: 14
+  puerperal: 8
   hexGrid: {fileID: 0}
   player: {fileID: 0}
 --- !u!4 &517268024
@@ -307,7 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdbb0ab276dc980488ac00ed9f5c935e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mutationRate: 50
+  mutationRate: 20
   totalMutations: 0
 --- !u!1 &705507993
 GameObject:
@@ -431,7 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e927ef0e09a2054c8132f88743c72c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numAnimals: 20
+  numAnimals: 50
   totalAnimals: 0
   numBabies: 0
   totalBabiesMade: 0
@@ -445,7 +525,8 @@ MonoBehaviour:
   speed: 3
   strength: 3
   vision: 6
-  energy: 15
+  energy: 10
+  puerperal: 5
   hexGrid: {fileID: 0}
 --- !u!4 &1139577953
 Transform:
@@ -473,7 +554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdbb0ab276dc980488ac00ed9f5c935e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mutationRate: 50
+  mutationRate: 20
   totalMutations: 0
 --- !u!1 &1554926550
 GameObject:
@@ -576,7 +657,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   gap: 0.05
-  foodPercentage: 50
+  foodPercentage: 60
   foodTiles: 0
   totalFoodTiles: 0
 --- !u!4 &1554926552

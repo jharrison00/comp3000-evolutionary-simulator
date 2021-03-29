@@ -28,7 +28,7 @@ public class ChickensController : AnimalsController
             animals[i] = chicken;
             chickenObj.transform.position = GetRandomSpawnLocation(chicken);
             chickenObj.transform.LookAt(new Vector3(0, chickenObj.transform.position.y, 0));
-            chicken.SetBaseStats(speed, strength, vision, energy, Animal.SpeciesType.Prey, false);    // starter statistics ( TO BE CHANGED BY USER)
+            chicken.SetBaseStats(speed, strength, vision, energy, puerperal, Animal.SpeciesType.Prey, false);    // starter statistics ( TO BE CHANGED BY USER)
             chicken.transform.parent = this.transform;
         }
     }

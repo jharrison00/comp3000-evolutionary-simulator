@@ -7,21 +7,9 @@ public class Wolf : Animal
 {
     public WolvesController wolvesController = WolvesController.Instance;
 
-    private bool timerActive = false;
-    private float timer = 0;
-
     public void Update()
     {
         bool moving = false;
-        if (timerActive)
-        {
-            timer += Time.deltaTime;
-            if (timer >= 2)
-            {
-                timerActive = false;
-                timer = 0;
-            }
-        }
         if (moveTileWorldLoc != new Vector3(0, 0, 0))
         {
             if (Vector3.Distance(moveTileWorldLoc, worldLocation) > 0.1f)
@@ -38,18 +26,16 @@ public class Wolf : Animal
                 transform.localPosition = moveTileWorldLoc;
                 moveTileWorldLoc = new Vector3(0, 0, 0);
                 animator.SetBool("Walk", false);
-                if (eating)
-                {
-                    // If move is done but character is eating (start a timer)
-                    timerActive = true;
-                }
                 moving = false;
             }
             worldLocation = transform.localPosition;
         }
         if (hunger >= energy * 10)
+        {
             wolvesController.Kill(this);
-        if (!timerActive && !moving)
+            Debug.Log(name + " has died to hunger");
+        }
+        if (!moving)
         {
             if (movesUntilAdult == 0 && isBaby)
             {
@@ -63,16 +49,19 @@ public class Wolf : Animal
     public void ChooseMove()
     {
         animator.SetBool("Eat", false);
+        eating = false;
         // Get surrounding info (nearby food + chickens + wolves)
         string currentLocationType = hexGrid.hexType[location.x, location.y];
         movableTiles = GetMoves(GetMoveDistance(currentLocationType));              // gets all tiles within object's speed and terrain type
         Vector2Int[] movableTilesExcludingOthers = RemoveWolves(movableTiles);      // all movable tiles that don't contain wolves
         visionTiles = GetMoves(vision);                                             // gets all tiles within object's vision
-        Vector2Int foodTile = NearestChicken(movableTilesExcludingOthers);          // gets closest chicken to object
-        Vector2Int foodInVision = NearestChicken(visionTiles);                      // gets closest chicken in object's vision
+        Vector2Int foodTile = NearestEatableChicken(movableTilesExcludingOthers);          // gets closest chicken to object
+        Vector2Int foodInVision = NearestEatableChicken(visionTiles);                      // gets closest chicken in object's vision
         Vector2Int wolfInVision = wolvesController.IsWolfNear(visionTiles, this);   // gets closest wolf in object's vision (for mating)
         Vector2Int none = new Vector2Int(-1, -1);
         Vector2Int moveTile = new Vector2Int();
+        Chicken chickenToEat = null;
+
 
         bool reproducing = CheckMatingCalls();  // if mate call sent and recieved are equal - trigger reproduction
 
@@ -81,9 +70,19 @@ public class Wolf : Animal
         {
             moveTile = GetClosestTile(mateCall.location, movableTiles);
             int distance = hexGrid.CubeDistance(hexGrid.OddRToCube(moveTile.x, moveTile.y), hexGrid.OddRToCube(mateCall.location.x, mateCall.location.y));
-            if (distance == 0)
+            if (distance == 0 && movesUntilMating == 0 && mateCall.movesUntilMating == 0)
             {
-                wolvesController.CreateBaby(this, (Wolf)mateCall, moveTile);
+                // Get random number for amount of babies
+                int numBabies = UnityEngine.Random.Range(1, 3);
+                Debug.Log(this.name + " and " + mateCall.name + " had " + numBabies + " babies");
+                for (int i = 0; i < numBabies; i++)
+                {
+                    wolvesController.CreateBaby(this, (Wolf)mateCall, moveTile);
+                }
+                hunger += 30;
+                mateCall.hunger += 30;
+                mateCall.mateCall = null;
+                mateCall = null;
             }
         }
         // If there is food and is hungry = go to food source
@@ -94,8 +93,8 @@ public class Wolf : Animal
             if (hexGrid.CubeDistance(hexGrid.OddRToCube(foodInVision.x, foodInVision.y), hexGrid.OddRToCube(moveTile.x, moveTile.y)) == 0)
             {
                 // if object has moved onto the tile successfully
-                Chicken chicken = wolvesController.GetChickenAtLocation(foodInVision);     // gets chicken object 
-                Eat(chicken);
+                chickenToEat = wolvesController.GetChickenAtLocation(foodInVision);     // gets chicken object 
+                eating = true;
             }
         }        
         // If there is no food but is hungry = go as close to food if any in vision
@@ -103,21 +102,19 @@ public class Wolf : Animal
         {
             moveTile = GetClosestTile(foodInVision, movableTilesExcludingOthers);
         }        
-        // If there is another wolf and not hungry = send signal to reproduce and stay still
-        else if (wolfInVision != none && hunger <= 50 && movesUntilMating == 0)
-        {
-            wolfInVision = wolvesController.IsWolfNear(visionTiles, this);  // secondary check to make sure there is still a wolf near
-            Wolf wolf = wolvesController.GetWolfAtLocation(wolfInVision);
-            wolvesController.SendMateSignal(this, wolf);
-            moveTile = this.location;
-        }
         // Else make a random move (attempt to avoid water)
         else
         {
             moveTile = TryToAvoidBadTerrain(movableTilesExcludingOthers);
         }
+        // If there is another wolf and not hungry = send signal to reproduce
+        if (wolfInVision != none && hunger <= 40 && movesUntilMating == 0)
+        {
+            wolfInVision = wolvesController.IsWolfNear(visionTiles, this);  // secondary check to make sure there is still a wolf near
+            Wolf wolf = wolvesController.GetWolfAtLocation(wolfInVision);
+            wolvesController.SendMateSignal(this, wolf);
+        }
 
-        this.hunger += 10;   // increase hunger each move
         movesUntilMating--;
         if (movesUntilMating < 0)
             movesUntilMating = 0;
@@ -125,12 +122,17 @@ public class Wolf : Animal
             movesUntilAdult -= 1;
 
         Move(moveTile);
+        if (eating == true && chickenToEat != null) 
+        {
+            Eat(chickenToEat);
+        }
     }
 
-    private Vector2Int NearestChicken(Vector2Int[] searchTiles)
+    private Vector2Int NearestEatableChicken(Vector2Int[] searchTiles)
     {
         Vector2Int[] chickenTiles = new Vector2Int[searchTiles.Length];
         int[] distances = new int[searchTiles.Length];
+        Chicken[] chickens = new Chicken[searchTiles.Length];
         int c = 0;
 
         foreach (Vector2Int tile in searchTiles)
@@ -139,11 +141,16 @@ public class Wolf : Animal
             {
                 if (chicken.location == tile)
                 {
-                    // Convert tile to cube location and calc distance from current tile
-                    Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
-                    distances[c] = hexGrid.CubeDistance(cubeLocation, cubeTile);
-                    chickenTiles[c] = tile;
-                    c++;
+                    if (chicken.strength <= strength)
+                    {
+                        // only add if chicken is eatable
+                        // Convert tile to cube location and calc distance from current tile
+                        Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
+                        distances[c] = hexGrid.CubeDistance(cubeLocation, cubeTile);
+                        chickenTiles[c] = tile;
+                        chickens[c] = (Chicken)chicken;
+                        c++;
+                    }
                 }
             }
         }

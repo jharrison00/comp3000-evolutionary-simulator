@@ -11,9 +11,10 @@ public class Animal : MonoBehaviour
     }
     
     public SpeciesType type;
-    public int speed, strength, vision, energy, hunger;
+    public int speed, strength, vision, energy, puerperal, hunger;
     public bool isBaby = false;
-    public int movesUntilMating = 2;
+
+    public int movesUntilMating;
     public int movesUntilAdult = 0;
     public Animal mateCall;
     public bool eating = false;
@@ -29,13 +30,16 @@ public class Animal : MonoBehaviour
     public HexGrid hexGrid = HexGrid.Instance;
     public Animator animator;
 
-    public void SetBaseStats(int speed, int strength, int vision, int energy, SpeciesType type, bool baby)
+    public void SetBaseStats(int speed, int strength, int vision, int energy, int puerperal, SpeciesType type, bool baby)
     {
         this.speed = speed;
         this.strength = strength;
         this.vision = vision;
         this.energy = energy;
+        this.puerperal = puerperal;
         this.type = type;
+
+        movesUntilMating = puerperal;
         hunger = 0;    // 0 is full energy * 10 is starving
         animator = this.gameObject.GetComponent<Animator>();
         if (baby)
@@ -151,17 +155,38 @@ public class Animal : MonoBehaviour
         // returns closest possible tile to desired move tile
         Vector3Int cubeDest = hexGrid.OddRToCube(desiredMoveTile.x, desiredMoveTile.y);
         int maxDist = 0;
+        int maxWaterDist = 0;
         Vector2Int maxTile = new Vector2Int(-1, -1);
+        Vector2Int maxWaterTile = new Vector2Int(-1, -1);
         foreach (var tile in tiles)
         {
-            Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
-            int dist = hexGrid.CubeDistance(cubeTile, cubeDest);
-            if (dist > maxDist)
+            string terrainType = hexGrid.hexType[tile.x, tile.y];
+            if (terrainType != "Water")
             {
-                maxDist = dist;
-                maxTile = tile;
+                Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
+                int dist = hexGrid.CubeDistance(cubeTile, cubeDest);
+                if (dist > maxDist)
+                {
+                    maxDist = dist;
+                    maxTile = tile;
+                }
+            }
+            else
+            {
+                Vector3Int cubeTile = hexGrid.OddRToCube(tile.x, tile.y);
+                int dist = hexGrid.CubeDistance(cubeTile, cubeDest);
+                if (dist > maxDist)
+                {
+                    maxWaterDist = dist;
+                    maxWaterTile = tile;
+                }
             }
         }
+        if (maxTile == new Vector2Int(-1, -1))
+        {
+            return maxWaterTile;
+        }
+
         return maxTile;
     }
 
@@ -175,7 +200,7 @@ public class Animal : MonoBehaviour
         location.x = moveTile.x;
         location.y = moveTile.y;
         cubeLocation = hexGrid.OddRToCube(location.x, location.y);
-        hunger = hunger + 10;
+        hunger += 10;
     }
 
     public Vector2Int TryToAvoidBadTerrain(Vector2Int[] tiles)

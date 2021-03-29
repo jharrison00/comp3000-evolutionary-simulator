@@ -8,8 +8,6 @@ public class WolvesController : AnimalsController
     public static WolvesController Instance;
     public Player player;
 
-    private int numPups = 0;
-
     private void Awake()
     {
         Instance = this;
@@ -34,7 +32,7 @@ public class WolvesController : AnimalsController
             animals[i] = wolf;
             wolfObj.transform.position = GetRandomSpawnLocation(wolf);
             wolfObj.transform.LookAt(new Vector3(0, wolfObj.transform.position.y, 0));
-            wolf.SetBaseStats(speed, strength, vision, energy, Animal.SpeciesType.Predator, false);   // starter statistics ( TO BE CHANGED BY USER)
+            wolf.SetBaseStats(speed, strength, vision, energy, puerperal, Animal.SpeciesType.Predator, false);   // starter statistics ( TO BE CHANGED BY USER)
             wolf.transform.parent = this.transform;
         }
     }
