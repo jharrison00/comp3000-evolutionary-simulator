@@ -62,5 +62,7 @@ public class WolvesController : AnimalsController
             ChickensController.Instance.KillBaby(chicken);
         else
             ChickensController.Instance.Kill(chicken);
+        ChickensController.Instance.totalDeaths++;
+        ChickensController.Instance.eaten++;
     }
 }

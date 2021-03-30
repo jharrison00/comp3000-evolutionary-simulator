@@ -33,6 +33,7 @@ public class Wolf : Animal
         if (hunger >= energy * 10)
         {
             wolvesController.Kill(this);
+            wolvesController.totalDeaths++;
             Debug.Log(name + " has died to hunger");
         }
         if (!moving)

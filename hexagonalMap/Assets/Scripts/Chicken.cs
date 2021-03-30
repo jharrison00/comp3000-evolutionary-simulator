@@ -53,6 +53,8 @@ public class Chicken : Animal
         {
             chickensController.Kill(this);
             Debug.Log(name + " has died to hunger");
+            chickensController.totalDeaths++;
+            chickensController.starved++;
         }
         if (!timerActive && !moving)
         {

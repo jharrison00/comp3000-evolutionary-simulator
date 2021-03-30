@@ -8,6 +8,7 @@ public class AnimalsController : MonoBehaviour
     public int totalAnimals;
     public int numBabies = 0;
     public int totalBabiesMade;
+    public int totalDeaths = 0;
     public Animal[] animals;
     public Animal[] babyAnimals;
     public GameObject animalPrefab;

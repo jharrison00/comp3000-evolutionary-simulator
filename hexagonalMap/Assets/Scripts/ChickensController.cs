@@ -3,7 +3,7 @@
 public class ChickensController : AnimalsController
 {
     public static ChickensController Instance;
-
+    public int starved = 0, eaten = 0;
     private void Awake()
     {
         Instance = this;
