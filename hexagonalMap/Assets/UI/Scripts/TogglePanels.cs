@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TogglePanels : MonoBehaviour
 {
-    public GameObject overallPanel, chickenPanel, wolfPanel;
+    public GameObject overallPanel, chickenPanel, wolfPanel, allGraphsPanel, graphPanel;
 
     public void TogglePanel()
     {
@@ -31,6 +31,17 @@ public class TogglePanels : MonoBehaviour
         if (!isOverallActive && !isChickenActive && isWolfActive) 
         {
             wolfPanel.SetActive(!isWolfActive);
+        }
+    }
+
+    public void ToggleGraphPanel()
+    {
+        bool isPanelActive = allGraphsPanel.activeSelf;
+        allGraphsPanel.SetActive(!isPanelActive);
+
+        if (graphPanel.activeSelf && isPanelActive)
+        {
+            graphPanel.SetActive(false);
         }
     }
 }

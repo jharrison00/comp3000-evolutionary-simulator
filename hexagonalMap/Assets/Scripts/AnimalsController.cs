@@ -63,17 +63,9 @@ public class AnimalsController : MonoBehaviour
     {
         foreach (var chicken in ChickensController.Instance.animals) 
         {
-            try
+            if (chicken.location == location)
             {
-                if (chicken.location == location)
-                {
-                    return (Chicken)chicken;
-                }
-            }
-            catch (System.NullReferenceException)
-            {
-                Debug.Log("BROKEN");
-                throw;
+                return (Chicken)chicken;
             }
         }
         return null;
@@ -230,5 +222,24 @@ public class AnimalsController : MonoBehaviour
             newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, Animal.SpeciesType.Prey, false);
         else
             newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, Animal.SpeciesType.Predator, false);
+    }
+
+    public List<int> GetAverageGenes()
+    {
+        int speed = 0, strength = 0, vision = 0, energy = 0, puerperal = 0;
+        foreach (Animal animal in animals)
+        {
+            speed += animal.speed;
+            strength += animal.strength;
+            vision += animal.vision;
+            energy += animal.energy;
+            puerperal += animal.puerperal;
+        }
+        speed = speed / animals.Length;
+        strength = strength / animals.Length;
+        vision = vision / animals.Length;
+        energy = energy / animals.Length;
+        puerperal = puerperal / animals.Length;
+        return new List<int> { speed, strength, vision, energy, puerperal };
     }
 }

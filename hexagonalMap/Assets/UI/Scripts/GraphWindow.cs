@@ -7,7 +7,8 @@ using System;
 
 public class GraphWindow : MonoBehaviour
 {
-    private static GraphWindow instance;
+    public static GraphWindow Instance;
+
     [SerializeField] private Sprite dotSprite;
     private RectTransform graphContainer;
     private RectTransform labelTemplateX, labelTemplateY;
@@ -16,6 +17,9 @@ public class GraphWindow : MonoBehaviour
     private List<IGraphVisualObject> graphVisualObjectList;
     private GameObject tooltipGameObject;
     private List<RectTransform> yLabelList;
+
+    public IGraphVisual lineGraphVisual;
+    public IGraphVisual barChartVisual;
 
     // Cached values
     private List<int> valueList;
@@ -27,7 +31,7 @@ public class GraphWindow : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
         graphContainer = transform.Find("GraphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("LabelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("LabelTemplateY").GetComponent<RectTransform>();
@@ -39,46 +43,10 @@ public class GraphWindow : MonoBehaviour
         graphVisualObjectList = new List<IGraphVisualObject>();
         yLabelList = new List<RectTransform>();
 
-        List<int> valueList = new List<int>() { 50, 98, 32, 7, 12, 9, 33, 43, 64, 19, 99 };
-        IGraphVisual lineGraphVisual = new LineGraphVisual(graphContainer, dotSprite, Color.green, new Color(1, 1, 1, 0.5f));
-        IGraphVisual barChartVisual = new BarChartVisual(graphContainer, Color.white, 0.9f);
+        lineGraphVisual = new LineGraphVisual(graphContainer, dotSprite, new Color(0.8941f, 0.9019f, 0.9019f, 1f), new Color(1, 1, 1, 0.5f));
+        barChartVisual = new BarChartVisual(graphContainer, new Color(0.8941f, 0.9019f, 0.9019f, 1f), 0.9f);
 
-        //ShowGraph(valueList, (int _i) => "Year " + (_i + 1), (float _f) => "Population " + Mathf.RoundToInt(_f));
-
-        ShowGraph(valueList, barChartVisual, -1);
-
-        //FunctionPeriodic.Create(() =>
-        //{
-        //    valueList.Clear();
-        //    for (int i = 0; i < 20; i++)
-        //    {
-        //        valueList.Add(UnityEngine.Random.Range(0, 500));
-        //    }
-        //    ShowGraph(valueList);
-        //}, 1f);
-
-        //bool useBarChart = true;
-        //FunctionPeriodic.Create(() =>
-        //{
-        //    if (useBarChart)
-        //    {
-        //        ShowGraph(valueList, barChartVisual, -1);
-        //    }
-        //    else
-        //    {
-        //        ShowGraph(valueList, lineGraphVisual, -1);
-        //    }
-        //    useBarChart = !useBarChart;
-        //}, 4f);
-
-        int value = 0;
-        FunctionPeriodic.Create(() =>
-        {
-            UpdateValue(0, value);
-            UpdateLastIndexValue(value + 5);
-            value++;
-        }, .1f);
-
+        HideTooltip();
 
         transform.Find("BarChartButton").GetComponent<Button_UI>().ClickFunc = () =>
         {
@@ -98,11 +66,6 @@ public class GraphWindow : MonoBehaviour
         };
     }
 
-    public static void ShowTooltip_Static(string tooltipText, Vector2 anchoredPos)
-    {
-        instance.ShowTooltip(tooltipText, anchoredPos);
-    }
-
     private void ShowTooltip(string tooltipText, Vector2 anchoredPos)
     {
         tooltipGameObject.SetActive(true);
@@ -118,26 +81,23 @@ public class GraphWindow : MonoBehaviour
         tooltipGameObject.transform.SetAsLastSibling();
     }
 
-    public static void HideTooltip_Static()
-    {
-        instance.HideTooltip();
-    }
-
     private void HideTooltip()
     {
         tooltipGameObject.SetActive(false);
     }
 
-    private void IncreaseVisibleAmount()
+    public void IncreaseVisibleAmount()
     {
+        if (valueList == null) return;
         this.graphVisual.Reset();
         if (this.maxVisibleValueAmount + 1 <= this.valueList.Count) 
         {
             ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount + 1, this.getAxisLabelX, this.getAxisLabelY);
         }
     }
-    private void DecreaseVisibleAmount()
+    public void DecreaseVisibleAmount()
     {
+        if (valueList == null) return;
         this.graphVisual.Reset();
         ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount - 1, this.getAxisLabelX, this.getAxisLabelY);
     }
@@ -147,9 +107,14 @@ public class GraphWindow : MonoBehaviour
         ShowGraph(this.valueList, graphVisual, this.maxVisibleValueAmount, this.getAxisLabelX, this.getAxisLabelY);
     }
 
-    private void ShowGraph(List<int> valueList, IGraphVisual graphVisual, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
+    public void ShowGraph(List<int> valueList, IGraphVisual graphVisual = null, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
     {
+        if (valueList == null) return;
         this.valueList = valueList;
+        if (graphVisual == null)
+        {
+            graphVisual = barChartVisual;
+        }
         this.graphVisual = graphVisual;
         this.getAxisLabelX = getAxisLabelX;
         this.getAxisLabelY = getAxisLabelY;
@@ -200,7 +165,7 @@ public class GraphWindow : MonoBehaviour
             RectTransform labelX = Instantiate(labelTemplateX);
             labelX.SetParent(graphContainer, false);
             labelX.gameObject.SetActive(true);
-            labelX.anchoredPosition = new Vector2(xPos, -4f);
+            labelX.anchoredPosition = new Vector2(xPos, -1f);
             labelX.GetComponent<Text>().text = getAxisLabelX(i + 1);
             gameObjectList.Add(labelX.gameObject);
 
@@ -220,7 +185,7 @@ public class GraphWindow : MonoBehaviour
             labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             float normalisedValue = i * 1f / seperatorCount;
-            labelY.anchoredPosition = new Vector2(-14f, 9f + (normalisedValue * graphHeight));
+            labelY.anchoredPosition = new Vector2(-17f, 14f + (normalisedValue * graphHeight));
             labelY.GetComponent<Text>().text = getAxisLabelY(normalisedValue * yMax);
             yLabelList.Add(labelY);
             gameObjectList.Add(labelY.gameObject);
@@ -236,12 +201,12 @@ public class GraphWindow : MonoBehaviour
         }
     }
 
-    private void UpdateLastIndexValue(int value)
+    public void UpdateLastIndexValue(int value)
     {
         UpdateValue(valueList.Count - 1, value);
     }
 
-    private void UpdateValue(int index,int value)
+    public void UpdateValue(int index,int value)
     {
         float yMaxBefore = CalculateYScale();
 
@@ -300,13 +265,13 @@ public class GraphWindow : MonoBehaviour
         return yMax;
     }
 
-    private interface IGraphVisual
+    public interface IGraphVisual
     {
         IGraphVisualObject CreateGraphVisualObject(Vector2 graphPos, float graphPosWidth, string tooltipText);
         void Reset();
     }
 
-    private interface IGraphVisualObject
+    public interface IGraphVisualObject
     {
         void SetGraphVisualObjectInfo(Vector2 graphPos, float graphPosWidth, string tooltipText);
         void CleanUp();
@@ -373,10 +338,10 @@ public class GraphWindow : MonoBehaviour
 
                 Button_UI barButtonUI = barGameObject.GetComponent<Button_UI>();
                 barButtonUI.MouseOverOnceFunc = () => {
-                    ShowTooltip_Static(tooltipText, graphPos);
+                    Instance.ShowTooltip(tooltipText, graphPos);
                 };
                 barButtonUI.MouseOutOnceFunc = () => {
-                    HideTooltip_Static();
+                    Instance.HideTooltip();
                 };
             }
 
@@ -492,10 +457,10 @@ public class GraphWindow : MonoBehaviour
 
                 Button_UI dotButtonUI = dotGameObject.GetComponent<Button_UI>();
                 dotButtonUI.MouseOverOnceFunc += () => {
-                    ShowTooltip_Static(tooltipText, graphPos);
+                    Instance.ShowTooltip(tooltipText, graphPos);
                 };
                 dotButtonUI.MouseOutOnceFunc += () => {
-                    HideTooltip_Static();
+                    Instance.HideTooltip();
                 };
 
                 if (OnChangedGraphVisualObjectInfo != null) OnChangedGraphVisualObjectInfo(this, EventArgs.Empty);
