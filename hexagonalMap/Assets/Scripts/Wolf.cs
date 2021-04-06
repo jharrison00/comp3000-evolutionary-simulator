@@ -32,9 +32,15 @@ public class Wolf : Animal
         }
         if (hunger >= energy * 10)
         {
-            wolvesController.Kill(this);
+            if (isBaby)
+            {
+                wolvesController.KillBaby(this);
+            }
+            else
+            {
+                wolvesController.Kill(this);
+            }
             wolvesController.totalDeaths++;
-            Debug.Log(name + " has died to hunger");
         }
         if (!moving)
         {
@@ -44,6 +50,7 @@ public class Wolf : Animal
             }
             // Do next move when there is no timer and not already moving
             ChooseMove();
+            age++;
         }
     }
 
@@ -75,6 +82,7 @@ public class Wolf : Animal
             {
                 // Get random number for amount of babies
                 int numBabies = UnityEngine.Random.Range(1, 3);
+                babies += numBabies;
                 Debug.Log(this.name + " and " + mateCall.name + " had " + numBabies + " babies");
                 for (int i = 0; i < numBabies; i++)
                 {
@@ -94,7 +102,7 @@ public class Wolf : Animal
             if (hexGrid.CubeDistance(hexGrid.OddRToCube(foodInVision.x, foodInVision.y), hexGrid.OddRToCube(moveTile.x, moveTile.y)) == 0)
             {
                 // if object has moved onto the tile successfully
-                chickenToEat = wolvesController.GetChickenAtLocation(foodInVision);     // gets chicken object 
+                chickenToEat = wolvesController.GetChickenAtLocation(foodInVision, false);     // gets chicken object 
                 eating = true;
             }
         }        
@@ -109,7 +117,7 @@ public class Wolf : Animal
             moveTile = TryToAvoidBadTerrain(movableTilesExcludingOthers);
         }
         // If there is another wolf and not hungry = send signal to reproduce
-        if (wolfInVision != none && hunger <= 40 && movesUntilMating == 0)
+        if (wolfInVision != none && hunger <= 40 && movesUntilMating == 0 && !isBaby)
         {
             wolfInVision = wolvesController.IsWolfNear(visionTiles, this);  // secondary check to make sure there is still a wolf near
             Wolf wolf = wolvesController.GetWolfAtLocation(wolfInVision);

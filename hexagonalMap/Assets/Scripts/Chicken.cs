@@ -51,8 +51,14 @@ public class Chicken : Animal
             Eat();
         if (hunger >= energy * 10)
         {
-            chickensController.Kill(this);
-            Debug.Log(name + " has died to hunger");
+            if (isBaby)
+            {
+                chickensController.KillBaby(this);
+            }
+            else
+            {
+                chickensController.Kill(this);
+            }
             chickensController.totalDeaths++;
             chickensController.starved++;
         }
@@ -64,6 +70,7 @@ public class Chicken : Animal
             }
             // Do next move when there is no timer and not already moving
             ChooseMove();
+            age++;
         }
     }
 
@@ -92,7 +99,9 @@ public class Chicken : Animal
             if (distance == 0 && movesUntilMating == 0 && mateCall.movesUntilMating == 0) 
             {
                 // Get random number for amount of babies
-                int numBabies = UnityEngine.Random.Range(1, 5);
+                int numBabies = UnityEngine.Random.Range(1, 3);
+                babies += numBabies;
+                mateCall.babies += numBabies;
                 Debug.Log(this.name + " and " + mateCall.name + " had " + numBabies + " babies");
                 for (int i = 0; i < numBabies; i++)
                 {
@@ -130,10 +139,10 @@ public class Chicken : Animal
             moveTile = TryToAvoidBadTerrain(movableTilesExcludingOthers);
         }
         // If there is another chicken and not hungry = send signal to reproduce
-        if (chickenInVision != none && hunger <= 40 && movesUntilMating == 0)
+        if (chickenInVision != none && hunger <= 40 && movesUntilMating == 0 && !isBaby)
         {
             chickenInVision = chickensController.IsChickenNear(visionTiles, this);
-            Chicken chicken = chickensController.GetChickenAtLocation(chickenInVision);
+            Chicken chicken = chickensController.GetChickenAtLocation(chickenInVision, true);
             chickensController.SendMateSignal(this, chicken);
         }
         movesUntilMating--;
@@ -187,7 +196,7 @@ public class Chicken : Animal
         for (int i = 0; i < tiles.Length; i++)
         {
             Vector2Int tile = tiles[i];
-            Chicken chicken = chickensController.GetChickenAtLocation(tile);
+            Chicken chicken = chickensController.GetChickenAtLocation(tile, false);
             if (chicken == null || chicken.location == this.location) 
             {
                 newTiles[c] = tile;

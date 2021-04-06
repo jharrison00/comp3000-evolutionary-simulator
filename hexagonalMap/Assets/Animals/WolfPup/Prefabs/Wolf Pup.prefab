@@ -274,7 +274,7 @@ Transform:
   m_Father: {fileID: 8530477259692888253}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8530477259693051031
+--- !u!1 &8530477259693051037
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -282,8 +282,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8530477259692888247}
-  - component: {fileID: 8530477259689935259}
+  - component: {fileID: 8530477259692888253}
+  - component: {fileID: 8530477259685642075}
+  - component: {fileID: 2959961989258822834}
+  - component: {fileID: 8051539105040712044}
   m_Layer: 0
   m_Name: Wolf Pup
   m_TagString: Untagged
@@ -291,27 +293,74 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8530477259692888247
+--- !u!4 &8530477259692888253
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8530477259693051031}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_GameObject: {fileID: 8530477259693051037}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8530477259692888253}
-  m_RootOrder: 15
+  m_Children:
+  - {fileID: 8530477259692888245}
+  - {fileID: 8530477259692888233}
+  - {fileID: 8530477259692888237}
+  - {fileID: 8530477259692888229}
+  - {fileID: 8530477259692888211}
+  - {fileID: 8530477259692888213}
+  - {fileID: 8530477259692888203}
+  - {fileID: 8530477259692888195}
+  - {fileID: 8530477259692888313}
+  - {fileID: 8530477259692888307}
+  - {fileID: 8530477259692888299}
+  - {fileID: 8530477259692888303}
+  - {fileID: 8530477259692888291}
+  - {fileID: 8530477259692888295}
+  - {fileID: 8530477259692888283}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &8530477259689935259
+--- !u!95 &8530477259685642075
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8530477259693051037}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 59a580b3010c36843ae25f25e3bb9267, type: 3}
+  m_Controller: {fileID: 9100000, guid: 9f2ab3122e476ce40add314d507852b1, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &2959961989258822834
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8530477259693051037}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5788928, y: 1.0627381, z: 1.2388468}
+  m_Center: {x: 0.00075244904, y: 0.5688713, z: -0.11942363}
+--- !u!137 &8051539105040712044
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8530477259693051031}
+  m_GameObject: {fileID: 8530477259693051037}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -323,7 +372,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 173374ef366d1f6478fe2e3224ba1360, type: 2}
+  - {fileID: 2100000, guid: 34abe8f6f20a2f943a1e971f133423a3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -383,72 +432,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.14241624, y: 0.009094864, z: -0.00000029802322}
     m_Extent: {x: 0.676462, y: 0.5697386, z: 0.2895527}
   m_DirtyAABB: 0
---- !u!1 &8530477259693051037
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8530477259692888253}
-  - component: {fileID: 8530477259685642075}
-  m_Layer: 0
-  m_Name: Wolf Pup
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8530477259692888253
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8530477259693051037}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 8530477259692888245}
-  - {fileID: 8530477259692888233}
-  - {fileID: 8530477259692888237}
-  - {fileID: 8530477259692888229}
-  - {fileID: 8530477259692888211}
-  - {fileID: 8530477259692888213}
-  - {fileID: 8530477259692888203}
-  - {fileID: 8530477259692888195}
-  - {fileID: 8530477259692888313}
-  - {fileID: 8530477259692888307}
-  - {fileID: 8530477259692888299}
-  - {fileID: 8530477259692888303}
-  - {fileID: 8530477259692888291}
-  - {fileID: 8530477259692888295}
-  - {fileID: 8530477259692888283}
-  - {fileID: 8530477259692888247}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &8530477259685642075
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8530477259693051037}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 59a580b3010c36843ae25f25e3bb9267, type: 3}
-  m_Controller: {fileID: 9100000, guid: 9f2ab3122e476ce40add314d507852b1, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8530477259693051073
 GameObject:
   m_ObjectHideFlags: 0

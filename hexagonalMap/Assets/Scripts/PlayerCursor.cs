@@ -1,24 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerCursor : MonoBehaviour
 {
     public GameObject selectedObject;
     public GameObject highlightedObject;
+
+    private GameObject currentHighlightedObject;
+    private GameObject currentSelectedObject;
+
     public Shader outlineShader;
     public Shader standardShader;
     public LayerMask selectableLayer;
-    private Player player;
-    private Player existingPlayer;
 
-    Ray ray;
-    RaycastHit hitData;
-
-    // Update is called once per frame
     void Update()
     {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        GetObjects();
+        DoOutlining();
+    }
+
+    private void GetObjects()
+    {
+        RaycastHit hitData;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hitData, 1000, selectableLayer))
         {
@@ -26,66 +33,74 @@ public class PlayerCursor : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                selectedObject = hitData.transform.gameObject;              
+                selectedObject = hitData.transform.gameObject;
+                SelectedAnimalStatsUpdater.Instance.SetPanel(selectedObject);
             }
         }
         else
         {
-            highlightedObject = null;
+            highlightedObject = null;          
 
             if (Input.GetMouseButtonDown(0))
             {
-                selectedObject = null;
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    selectedObject = null;
+                    SelectedAnimalStatsUpdater.Instance.RemovePanel();
+                }
             }
         }
-        OutlinePlayer();
-
     }
 
-    private void OutlinePlayer()
+    private void DoOutlining()
     {
-        if (selectedObject != null)
+        if (selectedObject != null) 
         {
-            player = selectedObject.GetComponent<Player>();
-            if (player != null)
+            if (currentSelectedObject != selectedObject && currentSelectedObject != null)
             {
-                player.material.shader = outlineShader;
-                existingPlayer = player;
+                ApplyShaderToObject(selectedObject, outlineShader);
+                ApplyShaderToObject(currentSelectedObject, standardShader);
             }
-            else if (player == null && existingPlayer != null)
+            if (currentSelectedObject == null)
             {
-                existingPlayer.material.shader = standardShader;
+                ApplyShaderToObject(selectedObject, outlineShader);
             }
+            currentSelectedObject = selectedObject;
         }
-    }
-
-    public void OutlineMaterial(Material material)
-    {
-        material.shader = outlineShader;
-    }
-
-    public void RemoveOutlineMaterial(Material material)
-    {
-        material.shader = standardShader;
-    }
-
-
-
-    public bool IsPlayerSelected()
-    {
-        if (selectedObject != null)
+        else if (currentSelectedObject != null)
         {
-            player = selectedObject.GetComponent<Player>();
-            if (player != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            ApplyShaderToObject(currentSelectedObject, standardShader);
+            currentSelectedObject = null;
         }
-        return false;
+
+        if (highlightedObject != null)
+        {
+            if (currentHighlightedObject != highlightedObject && currentHighlightedObject != null)
+            {
+                ApplyShaderToObject(highlightedObject, outlineShader);
+                if (currentHighlightedObject != currentSelectedObject)
+                {
+                    ApplyShaderToObject(currentHighlightedObject, standardShader);
+                }
+            }
+            if (currentHighlightedObject == null)
+            {
+                ApplyShaderToObject(highlightedObject, outlineShader);
+            }
+            currentHighlightedObject = highlightedObject;
+        }
+        else if (currentHighlightedObject != null && currentHighlightedObject != currentSelectedObject)  
+        {
+            ApplyShaderToObject(currentHighlightedObject, standardShader);
+            currentHighlightedObject = null;
+        }
     }
 
+    private void ApplyShaderToObject(GameObject gameObject,Shader shader)
+    {
+        SkinnedMeshRenderer skin = gameObject.GetComponent<SkinnedMeshRenderer>();
+        Material material = skin.material;
+        material.shader = shader;
+
+    }
 }

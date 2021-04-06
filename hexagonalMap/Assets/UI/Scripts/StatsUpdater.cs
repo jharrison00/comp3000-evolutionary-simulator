@@ -9,7 +9,7 @@ public class StatsUpdater : MonoBehaviour
 
     void Update()
     {
-        population.text = "Population: " + (ChickensController.Instance.numAnimals + WolvesController.Instance.numAnimals);
+        population.text = "Population: " + (ChickensController.Instance.numAnimals + ChickensController.Instance.numBabies + WolvesController.Instance.numAnimals + WolvesController.Instance.numBabies);
         chickens.text = "Chickens: " + ChickensController.Instance.numAnimals;
         wolves.text = "Wolves: " + WolvesController.Instance.numAnimals;
         chicks.text = "Chicks: " + ChickensController.Instance.numBabies;

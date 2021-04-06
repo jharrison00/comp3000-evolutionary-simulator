@@ -9,7 +9,7 @@ public class GraphWindow : MonoBehaviour
 {
     public static GraphWindow Instance;
 
-    [SerializeField] private Sprite dotSprite;
+    public Sprite dotSprite;
     private RectTransform graphContainer;
     private RectTransform labelTemplateX, labelTemplateY;
     private RectTransform dashTemplateX, dashTemplateY;
@@ -104,6 +104,7 @@ public class GraphWindow : MonoBehaviour
     private void SetGraphVisual(IGraphVisual graphVisual)
     {
         graphVisual.Reset();
+        this.graphVisual = graphVisual;
         ShowGraph(this.valueList, graphVisual, this.maxVisibleValueAmount, this.getAxisLabelX, this.getAxisLabelY);
     }
 
@@ -111,11 +112,17 @@ public class GraphWindow : MonoBehaviour
     {
         if (valueList == null) return;
         this.valueList = valueList;
-        if (graphVisual == null)
+        if (this.graphVisual == null)
         {
-            graphVisual = barChartVisual;
+            this.graphVisual = lineGraphVisual;
+            graphVisual = this.graphVisual;
+            graphVisual.Reset();
         }
-        this.graphVisual = graphVisual;
+        else
+        {
+            this.graphVisual.Reset();
+            graphVisual = this.graphVisual;
+        }
         this.getAxisLabelX = getAxisLabelX;
         this.getAxisLabelY = getAxisLabelY;
         if (getAxisLabelX == null) 
@@ -179,6 +186,7 @@ public class GraphWindow : MonoBehaviour
         }
 
         int seperatorCount = 10;
+
         for (int i = 0; i <= seperatorCount; i++)
         {
             RectTransform labelY = Instantiate(labelTemplateY);
@@ -247,7 +255,7 @@ public class GraphWindow : MonoBehaviour
         }
     }
 
-    private float CalculateYScale()
+    private int CalculateYScale()
     {
         float yMax = valueList[0];
 
@@ -259,10 +267,16 @@ public class GraphWindow : MonoBehaviour
                 yMax = value;
             }
         }
+        if (yMax < 20)
+        {
+            yMax = 20;
+        }
+        else
+        {
+            yMax = yMax * 1.2f;
+        }
 
-        yMax = yMax * 1.2f;
-
-        return yMax;
+        return Mathf.RoundToInt(yMax);
     }
 
     public interface IGraphVisual

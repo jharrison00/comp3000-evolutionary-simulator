@@ -92,107 +92,6 @@ Transform:
   m_Father: {fileID: 4934709992206218}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1055748561691468
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4410910982438300}
-  - component: {fileID: 137954050844376528}
-  m_Layer: 0
-  m_Name: Toon Chicken
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4410910982438300
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1055748561691468}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0, z: -0.019893898}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4303844821561524}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &137954050844376528
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1055748561691468}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RenderingLayerMask: 4294967295
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: e41f42f5e81b018479b0091156c9ecc6, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: d623cd35a78380d4eb0457c4e483abed, type: 3}
-  m_Bones:
-  - {fileID: 4016005350359256}
-  - {fileID: 4143754336944544}
-  - {fileID: 4834939201994840}
-  - {fileID: 4568355531208036}
-  - {fileID: 4934709992206218}
-  - {fileID: 4111610558296540}
-  - {fileID: 4838191212526148}
-  - {fileID: 4694446946191148}
-  - {fileID: 4050376775674420}
-  - {fileID: 4726429633659454}
-  - {fileID: 4709201070735134}
-  - {fileID: 4824906945813688}
-  - {fileID: 4431259306281654}
-  - {fileID: 4555298684851868}
-  - {fileID: 4411564350868700}
-  - {fileID: 4961337131067336}
-  - {fileID: 4478420414240470}
-  - {fileID: 4828843303752404}
-  - {fileID: 4943424213158940}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 4934709992206218}
-  m_AABB:
-    m_Center: {x: 0.0054738373, y: -0.096651964, z: 0.000000022351742}
-    m_Extent: {x: 0.23418353, y: 0.23064417, z: 0.15359914}
-  m_DirtyAABB: 0
 --- !u!1 &1200174205398646
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +195,7 @@ GameObject:
   - component: {fileID: 4303844821561524}
   - component: {fileID: 95943282229431942}
   - component: {fileID: 1624195182970237346}
+  - component: {fileID: 6103447769605863241}
   m_Layer: 0
   m_Name: Toon Chicken
   m_TagString: Untagged
@@ -318,7 +218,6 @@ Transform:
   - {fileID: 4667570188774346}
   - {fileID: 4934709992206218}
   - {fileID: 4687691789265122}
-  - {fileID: 4410910982438300}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -354,6 +253,76 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.28762043, y: 0.4651486, z: 0.42084926}
   m_Center: {x: -0.006504604, y: 0.2248569, z: -0.0027111599}
+--- !u!137 &6103447769605863241
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311290861401530}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 4294967295
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: e41f42f5e81b018479b0091156c9ecc6, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: 4300000, guid: d623cd35a78380d4eb0457c4e483abed, type: 3}
+  m_Bones:
+  - {fileID: 4016005350359256}
+  - {fileID: 4143754336944544}
+  - {fileID: 4834939201994840}
+  - {fileID: 4568355531208036}
+  - {fileID: 4934709992206218}
+  - {fileID: 4111610558296540}
+  - {fileID: 4838191212526148}
+  - {fileID: 4694446946191148}
+  - {fileID: 4050376775674420}
+  - {fileID: 4726429633659454}
+  - {fileID: 4709201070735134}
+  - {fileID: 4824906945813688}
+  - {fileID: 4431259306281654}
+  - {fileID: 4555298684851868}
+  - {fileID: 4411564350868700}
+  - {fileID: 4961337131067336}
+  - {fileID: 4478420414240470}
+  - {fileID: 4828843303752404}
+  - {fileID: 4943424213158940}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 4934709992206218}
+  m_AABB:
+    m_Center: {x: 0.0054738373, y: -0.096651964, z: 0.000000022351742}
+    m_Extent: {x: 0.23418353, y: 0.23064417, z: 0.15359914}
+  m_DirtyAABB: 0
 --- !u!1 &1325880688823160
 GameObject:
   m_ObjectHideFlags: 0

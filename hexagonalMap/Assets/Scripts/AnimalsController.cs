@@ -59,13 +59,23 @@ public class AnimalsController : MonoBehaviour
         return true;
     }
 
-    public Chicken GetChickenAtLocation(Vector2Int location)
+    public Chicken GetChickenAtLocation(Vector2Int location, bool forMate)
     {
         foreach (var chicken in ChickensController.Instance.animals) 
         {
-            if (chicken.location == location)
+            if (forMate)
             {
-                return (Chicken)chicken;
+                if (chicken.location == location && !chicken.isBaby)
+                {
+                    return (Chicken)chicken;
+                }
+            }
+            else
+            {
+                if (chicken.location == location)
+                {
+                    return (Chicken)chicken;
+                }
             }
         }
         return null;
@@ -75,7 +85,7 @@ public class AnimalsController : MonoBehaviour
     {
         foreach (var wolf in WolvesController.Instance.animals)
         {
-            if (wolf.location == location)
+            if (wolf.location == location && !wolf.isBaby)
             {
                 return (Wolf)wolf;
             }
@@ -131,28 +141,24 @@ public class AnimalsController : MonoBehaviour
         int[] stats = geneticAlgorithm.Begin(sender, recipient);
         baby.transform.parent = this.transform;
         if (chicken)
-            baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], stats[4], Animal.SpeciesType.Prey, true);
+            baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], stats[4], true);
         else
-            baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], stats[4], Animal.SpeciesType.Predator, true);
+            baby.SetBaseStats(stats[0], stats[1], stats[2], stats[3], stats[4], true);
     }
 
     public void Kill(Animal animal)
     {
-        int i = 0, x = 0;
+        numAnimals = animals.Length;
         numAnimals--;
         Animal[] newAnimals = new Animal[numAnimals];
-        foreach (var item in animals)
+        int counter = 0;
+        for (int i = 0; i < animals.Length; i++)
         {
-            if (item == animal)
+            if (animal != animals[i])
             {
-                animals[i] = null;
+                newAnimals[counter] = animals[i];
+                counter++;
             }
-            else
-            {
-                newAnimals[x] = item;
-                x++;
-            }
-            i++;
         }
         animals = newAnimals;
         Destroy(animal.gameObject);
@@ -160,22 +166,19 @@ public class AnimalsController : MonoBehaviour
 
     public void KillBaby(Animal animal)
     {
-        int i = 0, x = 0;
+        numBabies = babyAnimals.Length;
         numBabies--;
         Animal[] newBabies = new Animal[numBabies];
-        foreach (var baby in babyAnimals)
+        int counter = 0;
+        for (int i = 0; i < babyAnimals.Length; i++)
         {
-            if (baby == animal)
+            if (animal != babyAnimals[i])
             {
-                babyAnimals[i] = null;
+                newBabies[counter] = babyAnimals[i];
+                counter++;
             }
-            else
-            {
-                newBabies[x] = baby;
-                x++;
-            }
-            i++;
         }
+
         babyAnimals = newBabies;
         Destroy(animal.gameObject);
     }
@@ -219,27 +222,30 @@ public class AnimalsController : MonoBehaviour
         newAnimalObj.transform.LookAt(new Vector3(0, newAnimalObj.transform.position.y, 0));
         newAnimal.transform.parent = this.transform;
         if (chicken)
-            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, Animal.SpeciesType.Prey, false);
+            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, false);
         else
-            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, Animal.SpeciesType.Predator, false);
+            newAnimal.SetBaseStats(tempAnimal.speed, tempAnimal.strength, tempAnimal.vision, tempAnimal.energy, tempAnimal.puerperal, false);
     }
 
     public List<int> GetAverageGenes()
     {
         int speed = 0, strength = 0, vision = 0, energy = 0, puerperal = 0;
-        foreach (Animal animal in animals)
+        if (animals.Length != 0)
         {
-            speed += animal.speed;
-            strength += animal.strength;
-            vision += animal.vision;
-            energy += animal.energy;
-            puerperal += animal.puerperal;
+            foreach (Animal animal in animals)
+            {
+                speed += animal.speed;
+                strength += animal.strength;
+                vision += animal.vision;
+                energy += animal.energy;
+                puerperal += animal.puerperal;
+            }
+            speed = speed / animals.Length;
+            strength = strength / animals.Length;
+            vision = vision / animals.Length;
+            energy = energy / animals.Length;
+            puerperal = puerperal / animals.Length;
         }
-        speed = speed / animals.Length;
-        strength = strength / animals.Length;
-        vision = vision / animals.Length;
-        energy = energy / animals.Length;
-        puerperal = puerperal / animals.Length;
         return new List<int> { speed, strength, vision, energy, puerperal };
     }
 }

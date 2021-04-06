@@ -4,14 +4,7 @@ using UnityEngine;
 
 public class Animal : MonoBehaviour
 {
-    public enum SpeciesType
-    {
-        Prey,
-        Predator
-    }
-    
-    public SpeciesType type;
-    public int speed, strength, vision, energy, puerperal, hunger;
+    public int speed, strength, vision, energy, puerperal, hunger, age, babies;
     public bool isBaby = false;
 
     public int movesUntilMating;
@@ -30,21 +23,22 @@ public class Animal : MonoBehaviour
     public HexGrid hexGrid = HexGrid.Instance;
     public Animator animator;
 
-    public void SetBaseStats(int speed, int strength, int vision, int energy, int puerperal, SpeciesType type, bool baby)
+    public void SetBaseStats(int speed, int strength, int vision, int energy, int puerperal, bool baby)
     {
         this.speed = speed;
         this.strength = strength;
         this.vision = vision;
         this.energy = energy;
         this.puerperal = puerperal;
-        this.type = type;
 
         movesUntilMating = puerperal;
         hunger = 0;    // 0 is full energy * 10 is starving
+        age = 0;
+        babies = 0;
         animator = this.gameObject.GetComponent<Animator>();
         if (baby)
         {
-            movesUntilAdult = 5;
+            movesUntilAdult = 4;
             this.isBaby = true;
         }
     }

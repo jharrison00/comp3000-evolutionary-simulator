@@ -27,14 +27,18 @@ public class HexGrid : MonoBehaviour
     public string[,] hexType;
     public string[,] hexLocation;
 
-    float hexWidth = 1.732f;
-    float hexHeight = 2f;
+    public float hexWidth = 1.732f;
+    public float hexHeight = 2f;
 
     Vector3 startPos;
 
     private void Awake()
     {
         Instance = this;
+        int size = PlayerPrefs.GetInt("size");
+        gridWidth = size;
+        gridHeight = size;
+        foodPercentage = PlayerPrefs.GetInt("foodPercent");
     }
 
     private void Update()

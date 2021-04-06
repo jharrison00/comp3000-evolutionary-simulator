@@ -91,7 +91,7 @@ public class ChooseGraph : MonoBehaviour
             default:
                 break;
         }
-        graph.ShowGraph(currentList, graph.lineGraphVisual);
+        graph.ShowGraph(currentList);
         titleText.text = title;
     }
 }

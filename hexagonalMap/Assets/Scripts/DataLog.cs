@@ -20,7 +20,7 @@ public class DataLog : MonoBehaviour
     public List<int> chickenPuerperal = new List<int>();
 
     private float timer;
-    private float generationTime = 20f;
+    private float generationTime = 60f;
     public bool isNewData = false;
 
     public void Start()
@@ -53,11 +53,11 @@ public class DataLog : MonoBehaviour
 
     private void UpdatePopulation()
     {
-        int updatedPopulation = ChickensController.Instance.totalAnimals + WolvesController.Instance.totalAnimals + ChickensController.Instance.numBabies + WolvesController.Instance.numBabies;
+        int updatedPopulation = ChickensController.Instance.numAnimals + ChickensController.Instance.numBabies + WolvesController.Instance.numAnimals + WolvesController.Instance.numBabies;
         totalPopulation.Add(updatedPopulation);
-        int updatedChickenPopulation = ChickensController.Instance.totalAnimals + ChickensController.Instance.numBabies;
+        int updatedChickenPopulation = ChickensController.Instance.numAnimals + ChickensController.Instance.numBabies;
         chickenPopulation.Add(updatedChickenPopulation);
-        int updatedWolfPopulation = WolvesController.Instance.totalAnimals + WolvesController.Instance.numBabies;
+        int updatedWolfPopulation = WolvesController.Instance.numAnimals + WolvesController.Instance.numBabies;
         wolfPopulation.Add(updatedWolfPopulation);
     }
 

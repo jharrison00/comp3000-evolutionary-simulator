@@ -6,16 +6,23 @@ using UnityEngine;
 public class WolvesController : AnimalsController
 {
     public static WolvesController Instance;
-    public Player player;
 
     private void Awake()
     {
         Instance = this;
+
+        numAnimals = PlayerPrefs.GetInt("wolfAmount");
+        geneticAlgorithm.mutationRate = PlayerPrefs.GetInt("wolfMutation");
+        speed = PlayerPrefs.GetInt("wolfSpeed");
+        strength = PlayerPrefs.GetInt("wolfStrength");
+        vision = PlayerPrefs.GetInt("wolfVision");
+        energy = PlayerPrefs.GetInt("wolfEnergy");
+        puerperal = PlayerPrefs.GetInt("wolfPuerperal");
     }
 
     void Start()
     {
-        animals = new Wolf[numAnimals];
+        animals = new Animal[numAnimals];
         totalAnimals = numAnimals;
         hexGrid = HexGrid.Instance;
         geneticAlgorithm = GetComponent<GeneticAlgorithm>();
@@ -32,7 +39,7 @@ public class WolvesController : AnimalsController
             animals[i] = wolf;
             wolfObj.transform.position = GetRandomSpawnLocation(wolf);
             wolfObj.transform.LookAt(new Vector3(0, wolfObj.transform.position.y, 0));
-            wolf.SetBaseStats(speed, strength, vision, energy, puerperal, Animal.SpeciesType.Predator, false);   // starter statistics ( TO BE CHANGED BY USER)
+            wolf.SetBaseStats(speed, strength, vision, energy, puerperal, false);   // starter statistics ( TO BE CHANGED BY USER)
             wolf.transform.parent = this.transform;
         }
     }

@@ -7,11 +7,19 @@ public class ChickensController : AnimalsController
     private void Awake()
     {
         Instance = this;
-    }
+
+        numAnimals = PlayerPrefs.GetInt("chickenAmount");
+        geneticAlgorithm.mutationRate = PlayerPrefs.GetInt("chickenMutation");
+        speed = PlayerPrefs.GetInt("chickenSpeed");
+        strength = PlayerPrefs.GetInt("chickenStrength");
+        vision = PlayerPrefs.GetInt("chickenVision");
+        energy = PlayerPrefs.GetInt("chickenEnergy");
+        puerperal = PlayerPrefs.GetInt("chickenPuerperal");     
+}
 
     void Start()
     {
-        animals = new Chicken[numAnimals];
+        animals = new Animal[numAnimals];
         totalAnimals = numAnimals;
         hexGrid = HexGrid.Instance;
         geneticAlgorithm = GetComponent<GeneticAlgorithm>();
@@ -28,7 +36,7 @@ public class ChickensController : AnimalsController
             animals[i] = chicken;
             chickenObj.transform.position = GetRandomSpawnLocation(chicken);
             chickenObj.transform.LookAt(new Vector3(0, chickenObj.transform.position.y, 0));
-            chicken.SetBaseStats(speed, strength, vision, energy, puerperal, Animal.SpeciesType.Prey, false);    // starter statistics ( TO BE CHANGED BY USER)
+            chicken.SetBaseStats(speed, strength, vision, energy, puerperal, false);    // starter statistics ( TO BE CHANGED BY USER)
             chicken.transform.parent = this.transform;
         }
     }
@@ -49,6 +57,5 @@ public class ChickensController : AnimalsController
             }
         }
         return new Vector2Int(-1, -1);
-    } 
-
+    }
 }
