@@ -40,11 +40,16 @@ public class PlayerCamera : MonoBehaviour
 
             if (Input.GetMouseButton(1))
             {
+                Cursor.visible = false;
                 rotX += lookSpeedH * Input.GetAxis("Mouse X");
                 rotY -= lookSpeedV * Input.GetAxis("Mouse Y");
                 rotY = Mathf.Clamp(rotY, -90f, 90f);
 
                 transform.eulerAngles = new Vector3(rotY, rotX, 0f);
+            }
+            else
+            {
+                Cursor.visible = true;
             }
 
             //When horizontal keys are pressed
