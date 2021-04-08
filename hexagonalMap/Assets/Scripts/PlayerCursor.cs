@@ -18,8 +18,11 @@ public class PlayerCursor : MonoBehaviour
 
     void Update()
     {
-        GetObjects();
-        DoOutlining();
+        if (!PauseMenu.isPaused)
+        {
+            GetObjects();
+            DoOutlining();
+        }
     }
 
     private void GetObjects()

@@ -11,9 +11,9 @@ public class PlayerCamera : MonoBehaviour
     public float speedMultiplier = 2f;
     public float sidePadding = 10f;
 
-
     private float rotX = 0f;
     private float rotY = 0f;
+
     private bool isShiftHeld = false;
 
     private float boardWidth, boardHeight;
@@ -26,53 +26,56 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
-        //Look around with Right Mouse
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (!PauseMenu.isPaused)
         {
-            isShiftHeld = true;  
-        }
-        else
-        {
-            isShiftHeld = false;
-        }
-
-        if (Input.GetMouseButton(1))
-        {
-            rotX += lookSpeedH * Input.GetAxis("Mouse X");
-            rotY -= lookSpeedV * Input.GetAxis("Mouse Y");
-            rotY = Mathf.Clamp(rotY, -90f, 90f);
-
-            transform.eulerAngles = new Vector3(rotY, rotX, 0f);
-        }
-
-        //When horizontal keys are pressed
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-        {
-            float hMove = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeedH;
-            if (isShiftHeld)
+            //Look around with Right Mouse
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                hMove = hMove * speedMultiplier;
+                isShiftHeld = true;
             }
-            transform.Translate(hMove, 0, 0);
-        }
-
-        //When vertical keys are pressed
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
-        {
-            float vMove = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeedV;
-            if (isShiftHeld)
+            else
             {
-                vMove = vMove * speedMultiplier;
+                isShiftHeld = false;
             }
-            transform.Translate(0, 0, vMove);
-        }
 
-        // Clamped to be just out of board limits
-        Vector3 clampedPosition = transform.position;
-        clampedPosition.x = Mathf.Clamp(clampedPosition.x, 0 - boardWidth, boardWidth);
-        clampedPosition.y = Mathf.Clamp(clampedPosition.y, 10, 50);
-        clampedPosition.z = Mathf.Clamp(clampedPosition.z, 0 - boardHeight, boardHeight);
+            if (Input.GetMouseButton(1))
+            {
+                rotX += lookSpeedH * Input.GetAxis("Mouse X");
+                rotY -= lookSpeedV * Input.GetAxis("Mouse Y");
+                rotY = Mathf.Clamp(rotY, -90f, 90f);
 
-        transform.position = clampedPosition;
+                transform.eulerAngles = new Vector3(rotY, rotX, 0f);
+            }
+
+            //When horizontal keys are pressed
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+            {
+                float hMove = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeedH;
+                if (isShiftHeld)
+                {
+                    hMove = hMove * speedMultiplier;
+                }
+                transform.Translate(hMove, 0, 0);
+            }
+
+            //When vertical keys are pressed
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+            {
+                float vMove = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeedV;
+                if (isShiftHeld)
+                {
+                    vMove = vMove * speedMultiplier;
+                }
+                transform.Translate(0, 0, vMove);
+            }
+
+            // Clamped to be just out of board limits
+            Vector3 clampedPosition = transform.position;
+            clampedPosition.x = Mathf.Clamp(clampedPosition.x, 0 - boardWidth, boardWidth);
+            clampedPosition.y = Mathf.Clamp(clampedPosition.y, 10, 50);
+            clampedPosition.z = Mathf.Clamp(clampedPosition.z, 0 - boardHeight, boardHeight);
+
+            transform.position = clampedPosition;
+        }    
     }
 }
