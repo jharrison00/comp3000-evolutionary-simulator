@@ -6,13 +6,15 @@ public class PlayerCamera : MonoBehaviour
 {
     public float lookSpeedH = 2f;
     public float lookSpeedV = 2f;
-    public float dragSpeed = 10f;
     public float moveSpeedH = 10f;
     public float moveSpeedV = 10f;
+    public float speedMultiplier = 2f;
     public float sidePadding = 10f;
+
 
     private float rotX = 0f;
     private float rotY = 0f;
+    private bool isShiftHeld = false;
 
     private float boardWidth, boardHeight;
 
@@ -25,6 +27,15 @@ public class PlayerCamera : MonoBehaviour
     void Update()
     {
         //Look around with Right Mouse
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isShiftHeld = true;  
+        }
+        else
+        {
+            isShiftHeld = false;
+        }
+
         if (Input.GetMouseButton(1))
         {
             rotX += lookSpeedH * Input.GetAxis("Mouse X");
@@ -38,6 +49,10 @@ public class PlayerCamera : MonoBehaviour
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             float hMove = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeedH;
+            if (isShiftHeld)
+            {
+                hMove = hMove * speedMultiplier;
+            }
             transform.Translate(hMove, 0, 0);
         }
 
@@ -45,6 +60,10 @@ public class PlayerCamera : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
         {
             float vMove = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeedV;
+            if (isShiftHeld)
+            {
+                vMove = vMove * speedMultiplier;
+            }
             transform.Translate(0, 0, vMove);
         }
 
