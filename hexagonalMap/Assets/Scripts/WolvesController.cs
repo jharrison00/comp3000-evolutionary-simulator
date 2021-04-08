@@ -11,13 +11,13 @@ public class WolvesController : AnimalsController
     {
         Instance = this;
 
-        numAnimals = PlayerPrefs.GetInt("wolfAmount");
-        geneticAlgorithm.mutationRate = PlayerPrefs.GetInt("wolfMutation");
-        speed = PlayerPrefs.GetInt("wolfSpeed");
-        strength = PlayerPrefs.GetInt("wolfStrength");
-        vision = PlayerPrefs.GetInt("wolfVision");
-        energy = PlayerPrefs.GetInt("wolfEnergy");
-        puerperal = PlayerPrefs.GetInt("wolfPuerperal");
+        numAnimals = PlayerPrefs.GetInt("wolfAmount", numAnimals);
+        geneticAlgorithm.mutationRate = PlayerPrefs.GetInt("wolfMutation", geneticAlgorithm.mutationRate);
+        speed = PlayerPrefs.GetInt("wolfSpeed", speed);
+        strength = PlayerPrefs.GetInt("wolfStrength", strength);
+        vision = PlayerPrefs.GetInt("wolfVision", vision);
+        energy = PlayerPrefs.GetInt("wolfEnergy", energy);
+        puerperal = PlayerPrefs.GetInt("wolfPuerperal", puerperal);
     }
 
     void Start()

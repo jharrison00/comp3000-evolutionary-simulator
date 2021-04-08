@@ -35,10 +35,10 @@ public class HexGrid : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        int size = PlayerPrefs.GetInt("size");
+        int size = PlayerPrefs.GetInt("size", gridWidth);
         gridWidth = size;
         gridHeight = size;
-        foodPercentage = PlayerPrefs.GetInt("foodPercent");
+        foodPercentage = PlayerPrefs.GetInt("foodPercent", foodPercentage);
     }
 
     private void Update()

@@ -8,13 +8,13 @@ public class ChickensController : AnimalsController
     {
         Instance = this;
 
-        numAnimals = PlayerPrefs.GetInt("chickenAmount");
-        geneticAlgorithm.mutationRate = PlayerPrefs.GetInt("chickenMutation");
-        speed = PlayerPrefs.GetInt("chickenSpeed");
-        strength = PlayerPrefs.GetInt("chickenStrength");
-        vision = PlayerPrefs.GetInt("chickenVision");
-        energy = PlayerPrefs.GetInt("chickenEnergy");
-        puerperal = PlayerPrefs.GetInt("chickenPuerperal");     
+        numAnimals = PlayerPrefs.GetInt("chickenAmount", numAnimals);
+        geneticAlgorithm.mutationRate = PlayerPrefs.GetInt("chickenMutation", geneticAlgorithm.mutationRate);
+        speed = PlayerPrefs.GetInt("chickenSpeed", speed);
+        strength = PlayerPrefs.GetInt("chickenStrength", strength);
+        vision = PlayerPrefs.GetInt("chickenVision", vision);
+        energy = PlayerPrefs.GetInt("chickenEnergy", energy);
+        puerperal = PlayerPrefs.GetInt("chickenPuerperal", puerperal);     
 }
 
     void Start()
