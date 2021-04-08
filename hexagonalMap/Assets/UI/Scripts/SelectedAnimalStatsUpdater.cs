@@ -6,12 +6,16 @@ using TMPro;
 public class SelectedAnimalStatsUpdater : MonoBehaviour
 {
     public GameObject animalPanel;
-    public TextMeshProUGUI type, age, hunger, babies, speed, strength, vision, energy, puerperal;
+
+    public TMP_InputField type;
+    public TextMeshProUGUI age, hunger, babies, speed, strength, vision, energy, puerperal;
 
     public static SelectedAnimalStatsUpdater Instance;
+    public static bool isTextSelected = false;
 
     private GameObject animalObject;
     private Animal animal;
+    private Animal currentAnimal;
 
     public void Awake()
     {
@@ -22,14 +26,11 @@ public class SelectedAnimalStatsUpdater : MonoBehaviour
     {
         if (animal != null)
         {
-            if (animal.name.Contains("Chicken")) 
-                type.text = "Chicken";
-            else if (animal.name.Contains("Chick"))
-                type.text = "Chick";
-            else if (animal.name.Contains("Wolf"))
-                type.text = "Wolf";
-            else if (animal.name.Contains("Pup"))
-                type.text = "Pup";
+            if (currentAnimal != animal && currentAnimal != null)
+            {
+                type.text = animal.name;
+            }
+            currentAnimal = animal;
 
             age.text = "Age " + animal.age;
             hunger.text = "Hunger " + animal.hunger;
@@ -37,7 +38,7 @@ public class SelectedAnimalStatsUpdater : MonoBehaviour
             speed.text = "Speed " + animal.speed;
             strength.text = "Strength " + animal.strength;
             vision.text = "Vision " + animal.vision;
-            energy.text = "Energy " + animal.energy; 
+            energy.text = "Energy " + animal.energy;
             puerperal.text = "Puerperal " + animal.puerperal;
         }
         else
@@ -48,13 +49,28 @@ public class SelectedAnimalStatsUpdater : MonoBehaviour
     public void SetPanel(GameObject animalObject)
     {
         this.animalObject = animalObject;
-        this.animal = animalObject.GetComponent<Animal>();
+        animal = animalObject.GetComponent<Animal>();
         animalPanel.SetActive(true);
     }
 
     public void RemovePanel()
     {
         animalPanel.SetActive(false);
-        this.animalObject = null;
+        animalObject = null;
+    }
+
+    public void UpdateType(string newType)
+    {
+        type.text = newType;
+    }
+
+    public void Selected()
+    {
+        isTextSelected = true;
+    }
+
+    public void Deselected()
+    {
+        isTextSelected = false;
     }
 }

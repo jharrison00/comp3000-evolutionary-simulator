@@ -199,12 +199,26 @@ public class AnimalsController : MonoBehaviour
         {
             chicken = true;
             newAnimal = newAnimalObj.AddComponent<Chicken>();
-            newAnimalObj.name = "Chicken" + totalAnimals;
+            if (tempAnimal.name.Contains("Chick"))
+            {
+                newAnimalObj.name = "Chicken" + totalAnimals;
+            }
+            else
+            {
+                newAnimalObj.name = tempAnimal.name;
+            }
         }
         else
         {
             newAnimal = newAnimalObj.AddComponent<Wolf>();
-            newAnimalObj.name = "Wolf" + totalAnimals;
+            if (tempAnimal.name.Contains("Pup"))
+            {
+                newAnimalObj.name = "Wolf" + totalAnimals;
+            }
+            else
+            {
+                newAnimalObj.name = tempAnimal.name;
+            }
         }
         Animal[] newAnimals = new Animal[numAnimals];
         if (animals.Length > 0)

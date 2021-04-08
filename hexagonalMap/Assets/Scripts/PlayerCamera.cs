@@ -52,27 +52,30 @@ public class PlayerCamera : MonoBehaviour
                 Cursor.visible = true;
             }
 
-            //When horizontal keys are pressed
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+            if (!SelectedAnimalStatsUpdater.isTextSelected)
             {
-                float hMove = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeedH;
-                if (isShiftHeld)
+                //When horizontal keys are pressed
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                 {
-                    hMove = hMove * speedMultiplier;
+                    float hMove = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeedH;
+                    if (isShiftHeld)
+                    {
+                        hMove = hMove * speedMultiplier;
+                    }
+                    transform.Translate(hMove, 0, 0);
                 }
-                transform.Translate(hMove, 0, 0);
-            }
 
-            //When vertical keys are pressed
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
-            {
-                float vMove = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeedV;
-                if (isShiftHeld)
+                //When vertical keys are pressed
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
                 {
-                    vMove = vMove * speedMultiplier;
+                    float vMove = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeedV;
+                    if (isShiftHeld)
+                    {
+                        vMove = vMove * speedMultiplier;
+                    }
+                    transform.Translate(0, 0, vMove);
                 }
-                transform.Translate(0, 0, vMove);
-            }
+            }         
 
             // Clamped to be just out of board limits
             Vector3 clampedPosition = transform.position;
