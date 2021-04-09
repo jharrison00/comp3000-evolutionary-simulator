@@ -57,6 +57,7 @@ public class SelectedAnimalStatsUpdater : MonoBehaviour
     {
         animalPanel.SetActive(false);
         animalObject = null;
+        isTextSelected = false;
     }
 
     public void UpdateType(string newType)

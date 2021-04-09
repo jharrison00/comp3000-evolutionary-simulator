@@ -9115,14 +9115,14 @@ MonoBehaviour:
   m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7ad1b0452d309c24ab123034ed0c675f, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 08e1fd427c464034ca9b89c49306c4d1, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e29c9ff63ad1033449ea4b07e9ce23e6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9970,7 +9970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e927ef0e09a2054c8132f88743c72c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numAnimals: 20
+  numAnimals: 400
   totalAnimals: 0
   numBabies: 0
   totalBabiesMade: 0
@@ -10233,14 +10233,14 @@ MonoBehaviour:
   m_text: enter animal name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7ad1b0452d309c24ab123034ed0c675f, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 08e1fd427c464034ca9b89c49306c4d1, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e29c9ff63ad1033449ea4b07e9ce23e6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -12134,7 +12134,7 @@ RectTransform:
   - {fileID: 558049477}
   - {fileID: 320427480}
   m_Father: {fileID: 1763781861}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -14983,8 +14983,8 @@ RectTransform:
   - {fileID: 18343342}
   - {fileID: 567100807}
   - {fileID: 1924646724}
-  - {fileID: 1496919143}
   - {fileID: 1814031995}
+  - {fileID: 1496919143}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15301,7 +15301,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1763781861}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1814031996
 MonoBehaviour:
@@ -16060,7 +16060,7 @@ GameObject:
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1924646724
 RectTransform:
   m_ObjectHideFlags: 0

@@ -12,6 +12,9 @@ public class StartMenu : MonoBehaviour
     public Slider chickenAmountSlider, chickenMutationSlider, chickenSpeedSlider, chickenStrengthSlider, chickenVisionSlider, chickenEnergySlider, chickenPuerperalSlider;
     public Slider wolfAmountSlider, wolfMutationSlider, wolfSpeedSlider, wolfStrengthSlider, wolfVisionSlider, wolfEnergySlider, wolfPuerperalSlider;
 
+    public GameObject mainMenu;
+    public GameObject startMenu;
+
     public void PlayGame()
     {
         if (small.isOn)
@@ -46,5 +49,14 @@ public class StartMenu : MonoBehaviour
         PlayerPrefs.SetInt("wolfPuerperal", (int)wolfPuerperalSlider.value);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            mainMenu.SetActive(true);
+            startMenu.SetActive(false);
+        }
     }
 }

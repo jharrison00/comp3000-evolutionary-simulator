@@ -394,7 +394,9 @@ public class HexGrid : MonoBehaviour
                     int rotateY = UnityEngine.Random.Range(0, 360);
                     obj.eulerAngles = new Vector3(0, rotateY, 0);
                     obj.localScale += new Vector3(0, obj.localScale.y * heights[x, y], 0f);
+
                     hex.name = "Vegetation" + x + "," + y;
+                    obj.parent = hex;
                     hexType[x, y] = "Vegetation";
                     hexLocation[x, y] = hex.name;
                     break;

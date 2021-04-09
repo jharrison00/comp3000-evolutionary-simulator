@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingsMenu : MonoBehaviour
 {
     Resolution[] resolutions;
-    public Dropdown resolutionDropdown;
+    public TMP_Dropdown resolutionDropdown;
+
+    public GameObject mainMenu;
+    public GameObject settingsMenu;
 
     private void Start()
     {
@@ -30,7 +34,6 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
-
     }
 
     public void SetQuality(int qualityIndex)
@@ -47,5 +50,14 @@ public class SettingsMenu : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            mainMenu.SetActive(true);
+            settingsMenu.SetActive(false);
+        }
     }
 }
