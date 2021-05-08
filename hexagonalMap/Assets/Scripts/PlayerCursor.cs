@@ -27,29 +27,30 @@ public class PlayerCursor : MonoBehaviour
 
     private void GetObjects()
     {
-        RaycastHit hitData;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitData; 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);    // Ray from the position of players mouse
 
+        // If the ray hits an object in the specified layer at max distance of 1000 -> send hit object data to hitData
         if (Physics.Raycast(ray, out hitData, 1000, selectableLayer))
-        {
-            highlightedObject = hitData.transform.gameObject;
+        {  
+            highlightedObject = hitData.transform.gameObject;   // Obtain GameObject of the hit object and store as highlightedObject
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))    // If mouse is clicked
             {
-                selectedObject = hitData.transform.gameObject;
-                SelectedAnimalStatsUpdater.Instance.SetPanel(selectedObject);
+                selectedObject = hitData.transform.gameObject;  // Set the selectedObject to the hit object
+                SelectedAnimalStatsUpdater.Instance.SetPanel(selectedObject);   // Change individual animal statistics to use selected animal
             }
         }
         else
-        {
-            highlightedObject = null;          
+        {   // If nothing is hit
+            highlightedObject = null;   
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))    // If mouse is clicked
             {
-                if (!EventSystem.current.IsPointerOverGameObject())
+                if (!EventSystem.current.IsPointerOverGameObject()) // If mouse isn't over UI elements
                 {
-                    selectedObject = null;
-                    SelectedAnimalStatsUpdater.Instance.RemovePanel();
+                    selectedObject = null;  
+                    SelectedAnimalStatsUpdater.Instance.RemovePanel();  // Remove UI panel for individual animal stats
                 }
             }
         }
