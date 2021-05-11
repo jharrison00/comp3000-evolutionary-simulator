@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
+using System;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -14,7 +16,42 @@ public class SettingsMenu : MonoBehaviour
 
     private void Start()
     {
-        resolutions = Screen.resolutions;
+        resolutions = Screen.resolutions.Where(r => r.width > 800 && r.height > 600).ToArray();
+        HashSet<Tuple<int, int>> uniqResolutions = new HashSet<Tuple<int, int>>();
+        Dictionary<Tuple<int, int>, int> maxRefreshRates = new Dictionary<Tuple<int, int>, int>();
+        for (int i = 0; i < resolutions.GetLength(0); i++)
+        {
+            //Add resolutions (if they are not already contained)
+            Tuple<int, int> resolution = new Tuple<int, int>(resolutions[i].width, resolutions[i].height);
+            uniqResolutions.Add(resolution);
+            //Get highest framerate:
+            if (!maxRefreshRates.ContainsKey(resolution))
+            {
+                maxRefreshRates.Add(resolution, resolutions[i].refreshRate);
+            }
+            else
+            {
+                maxRefreshRates[resolution] = resolutions[i].refreshRate;
+            }
+        }
+
+        //Build resolution list:
+        resolutions = new Resolution[uniqResolutions.Count];
+        int x = 0;
+        foreach (Tuple<int, int> resolution in uniqResolutions)
+        {
+            Resolution newResolution = new Resolution();
+            newResolution.width = resolution.Item1;
+            newResolution.height = resolution.Item2;
+            if (maxRefreshRates.TryGetValue(resolution, out int refreshRate))
+            {
+                newResolution.refreshRate = refreshRate;
+            }
+            resolutions[x] = newResolution;
+            x++;
+        }
+
+        //resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
         List<string> options = new List<string>();
@@ -25,7 +62,7 @@ public class SettingsMenu : MonoBehaviour
             string option = resolutions[i].width + " X " + resolutions[i].height;
             options.Add(option);
 
-            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)  
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
             {
                 currentResolutionIndex = i;
             }
