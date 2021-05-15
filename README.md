@@ -29,6 +29,9 @@ The game can be installed on any Windows 64-bit system:
 * [Installer](https://github.com/jharrison00/comp3000-The-Evolutionary-Simulator/tree/main/Builds/Windows/Installer "Installer") - by downloading and running the The Evolutionary Simulator Setup (x86_64).exe file
 * [Manually](https://github.com/jharrison00/comp3000-The-Evolutionary-Simulator/blob/main/Builds/Windows/x86_64/TheEvolutionarySimulator.zip "Manually") - by downloading this .zip file and unzipping the contents
 
+## Video Link
+https://youtu.be/OoqdyErYu9A
+
 ## System Requirements
 
 ### Minimum:
